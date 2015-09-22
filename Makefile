@@ -1,16 +1,16 @@
 
 #------ MAKE CHANGES TO BASE_DIR : Please put the path to base directory of your pristine gcc-4.7.2 build -----------#
-BASE_DIR = /home/manishearth/Academics/ProgAn/
+BASE_DIR = /home/manishearth/Academics/ProgAn/proj/gcc-build
 
-INSTALL = $(BASE_DIR)/install
+INSTALL = $(BASE_DIR)/../../install
 CPP = $(INSTALL)/bin/g++
 CC = $(INSTALL)/bin/gcc
-NEW_PATH = $(BASE_DIR)/include/c++/5.2.0
+NEW_PATH = $(BASE_DIR)/gcc
 
 GCCPLUGINS_DIR:= $(shell $(CPP) -print-file-name=plugin)
-INCLUDE= -I$(GCCPLUGINS_DIR)/include -I$(NEW_PATH)
+INCLUDE= -I$(GCCPLUGINS_DIR)/include -I$(NEW_PATH) -I$(NEW_PATH)/include
 
-FLAGS= -fPIC -flto -flto-partition=none 
+FLAGS= -fPIC -flto -flto-partition=none -Wno-literal-suffix
 
 %.o: %.c
 	$(CC) $(FLAGS) $(INCLUDE) -c $< 
