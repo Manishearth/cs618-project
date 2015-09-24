@@ -1,0 +1,3 @@
+BASE_DIR = /home/manishearth/Academics/ProgAn/proj/gcc-build
+
+INSTALL = $(BASE_DIR)/../../install

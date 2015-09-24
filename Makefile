@@ -1,8 +1,6 @@
 
 #------ MAKE CHANGES TO BASE_DIR : Please put the path to base directory of your pristine gcc-4.7.2 build -----------#
-BASE_DIR = /home/manishearth/Academics/ProgAn/proj/gcc-build
-
-INSTALL = $(BASE_DIR)/../../install
+include paths.mk
 CPP = $(INSTALL)/bin/g++
 CC = $(INSTALL)/bin/gcc
 NEW_PATH = $(BASE_DIR)/gcc
