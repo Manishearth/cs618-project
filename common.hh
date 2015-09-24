@@ -45,7 +45,7 @@
 #define DEF_VEC_ALLOC_O(x,...) static bool ao_##x = false
 #define DEF_VEC_ALLOC_P(x, ...) static bool ap_##x = false
 #define VEC_length(cs, vec) vec->length()
-#define VEC_index(cs, vec, idx) vec[idx]
+#define VEC_index(cs, vec, idx) ((*vec)[idx])
 
 #define _FOR_EACH_VEC_ELT(a,b,c) FOR_EACH_VEC_ELT(a,b,c)
 #undef FOR_EACH_VEC_ELT
