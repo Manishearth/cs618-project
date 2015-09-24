@@ -49,7 +49,7 @@
 
 #define _FOR_EACH_VEC_ELT(a,b,c) FOR_EACH_VEC_ELT(a,b,c)
 #undef FOR_EACH_VEC_ELT
-#define FOR_EACH_VEC_ELT(a,b,c,d) _FOR_EACH_VEC_ELT(a,b,c)
+#define FOR_EACH_VEC_ELT(a,b,c,d) _FOR_EACH_VEC_ELT(b,c,d)
 
 #include "ggc.h"
 #include "alloc-pool.h"
