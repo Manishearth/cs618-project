@@ -59,6 +59,9 @@
 #define FOR_EACH_BB(bb) FOR_EACH_BB_FN(bb, cfun)
  
 #define cgraph_node_name(node) node->asm_name()
+
+#define LOOP_ITERATOR(li)
+
 #include "ggc.h"
 #include "alloc-pool.h"
 #include "params.h"

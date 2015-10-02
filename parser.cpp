@@ -3687,7 +3687,7 @@ study_loops ()
 	DEBUG ("\nnumber_of_loops = %d", number_of_loops ());
 
 	// Studying loops
-	loop_iterator li;
+	LOOP_ITERATOR(li);
 	struct loop * loop;
 	FOR_EACH_LOOP_NEW (li, loop, 0)
 	{
