@@ -27,6 +27,9 @@
 #include "cfgloop.h"
 #include "vec.h"
 #include "gimple-iterator.h"
+
+#include "gimple-ssa.h"
+#include "ssa-iterators.h"
 #define VEC(t, gc) auto_vec<t>
 #define VEC_free(t,gc,o) o->~auto_vec ()
 
@@ -53,6 +56,7 @@
 
 #define VEC_alloc_NEW(vec, cs, h, len) vec.create(len) // vec = VEC_alloc(args...) in 4
 
+#define FOR_EACH_BB(bb) FOR_EACH_BB_FN(bb, cfun)
  
 #include "ggc.h"
 #include "alloc-pool.h"
