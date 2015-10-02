@@ -59,7 +59,7 @@ map_arguments_at_call (gimple stmt, tree decl, bool generate_liveness, basic_blo
 	       DEBUG ("\nfield_must_have_pointers");
                VEC (ce_s, heap) *results = NULL;
                cs_get_constraint_for (arg, &results, bb, cnode);
-               FOR_EACH_VEC_ELT (ce_s, results, i, exp)
+               FOR_EACH_VEC_ELT_NEW (ce_s, results, i, exp)
 	       {
 		   DEBUG ("\nGenerating liveness of variable %d", exp->var);	
                    ((block_information *)(bb->aux))->add_to_parsed_data_indices (exp->var, false, bb);	// generate_liveness_constraints // Vini: Why commented out???
@@ -504,7 +504,7 @@ push_fields_onto_fieldstack (tree type, VEC(fieldoff_s,heap) **fieldstack, HOST_
   DEBUG ("\nVEC_length (fieldoff_s, *fieldstack)=%d", VEC_length (fieldoff_s, *fieldstack)); 
   unsigned int i = 0;
   fieldoff_s *fo = NULL;
-  FOR_EACH_VEC_ELT (fieldoff_s, *fieldstack, i, fo)
+  FOR_EACH_VEC_ELT_NEW (fieldoff_s, *fieldstack, i, fo)
   {
 	DEBUG ("%lld,", fo->offset);
   }
@@ -599,7 +599,7 @@ push_fields_onto_fieldstack (tree type, VEC(fieldoff_s,heap) **fieldstack, HOST_
 		DEBUG ("\n7-- pushed fields:");
 		unsigned int i = 0;
 		fieldoff_s *fo = NULL;
-		FOR_EACH_VEC_ELT (fieldoff_s, *fieldstack, i, fo)
+		FOR_EACH_VEC_ELT_NEW (fieldoff_s, *fieldstack, i, fo)
 		{
 			DEBUG ("%lld,", fo->offset);
 		}
@@ -659,7 +659,7 @@ push_fields_onto_fieldstack (tree type, VEC(fieldoff_s,heap) **fieldstack, HOST_
 		DEBUG ("\n11-- pushed fields:");
 		unsigned int i = 0;
 		fieldoff_s *fo = NULL;
-		FOR_EACH_VEC_ELT (fieldoff_s, *fieldstack, i, fo)
+		FOR_EACH_VEC_ELT_NEW (fieldoff_s, *fieldstack, i, fo)
 		{
 			DEBUG ("i=%d,%lld,", i, fo->offset);
 		}
@@ -825,7 +825,7 @@ check_for_overlaps (VEC (fieldoff_s,heap) *fieldstack)
   unsigned int i;
   HOST_WIDE_INT lastoffset = -1;
 
-  FOR_EACH_VEC_ELT (fieldoff_s, fieldstack, i, fo)
+  FOR_EACH_VEC_ELT_NEW (fieldoff_s, fieldstack, i, fo)
     {
       if (fo->offset == lastoffset)
         return true;
@@ -1196,7 +1196,7 @@ cs_create_variable_info_for (tree decl, const char *name, basic_block bb, struct
 	   lhs.var = vi->id;
 	   lhs.offset = 0;
 	   lhs.type = SCALAR;
-	   FOR_EACH_VEC_ELT (ce_s, rhsc, i, rhsp)		// Vini: Why commented out????
+	   FOR_EACH_VEC_ELT_NEW (ce_s, rhsc, i, rhsp)		// Vini: Why commented out????
 	       cs_process_constraint (new_constraint (lhs, *rhsp), bb);
 	   VEC_free (ce_s, heap, rhsc);			// Vini: Why commented out????
        }
@@ -1958,7 +1958,7 @@ cs_do_deref (VEC (ce_s, heap) **constraints, basic_block bb, struct cgraph_node 
    struct constraint_expr *c;
    unsigned int i = 0;
 
-   FOR_EACH_VEC_ELT (ce_s, *constraints, i, c) {
+   FOR_EACH_VEC_ELT_NEW (ce_s, *constraints, i, c) {
        if (c->type == SCALAR)
        {
 	   DEBUG ("\nSCALAR -> DEREF");
@@ -2173,7 +2173,7 @@ cs_get_constraint_for_component_ref (tree t, VEC(ce_s, heap) **results,
    DEBUG ("\nafter cs_get_constraint_for_1()");
    struct constraint_expr *rhsp;
    unsigned j;
-   FOR_EACH_VEC_ELT (ce_s, *results, j, rhsp) {
+   FOR_EACH_VEC_ELT_NEW (ce_s, *results, j, rhsp) {
       DEBUG ("\nrhsp %d offset %llu\n", rhsp->var, rhsp->offset);
    }
 #endif
@@ -2222,7 +2222,7 @@ cs_get_constraint_for_component_ref (tree t, VEC(ce_s, heap) **results,
 		DEBUG ("\naddress_p");
                struct constraint_expr *rhsp;
                unsigned j;
-               FOR_EACH_VEC_ELT (ce_s, *results, j, rhsp) {
+               FOR_EACH_VEC_ELT_NEW (ce_s, *results, j, rhsp) {
                   DEBUG ("\nrhsp %d offset %llu\n", rhsp->var, rhsp->offset);
                }
 #endif
@@ -2463,7 +2463,7 @@ cs_get_constraint_for_1 (tree t, VEC (ce_s, heap) **results, bool address_p,
                    DEBUG ("\nafter ARRAY_REF|ARRAY_RANGE_REF|COMPONENT_REF");
   		   struct constraint_expr *rhsp;
 		   unsigned j;
-                   FOR_EACH_VEC_ELT (ce_s, *results, j, rhsp) {
+                   FOR_EACH_VEC_ELT_NEW (ce_s, *results, j, rhsp) {
 	              DEBUG ("\nrhsp %d offset %llu\n", rhsp->var, rhsp->offset);
 		   }
 #endif
@@ -2497,7 +2497,7 @@ cs_get_constraint_for_1 (tree t, VEC (ce_s, heap) **results, bool address_p,
 		       struct constraint_expr *rhsp;
 		       unsigned j;
 		       cs_get_constraint_for_1 (val, &tmp, address_p, lhs_p, bb, cnode);
-		       FOR_EACH_VEC_ELT (ce_s, tmp, j, rhsp)
+		       FOR_EACH_VEC_ELT_NEW (ce_s, tmp, j, rhsp)
 		           VEC_safe_push (ce_s, heap, *results, rhsp);
 		       VEC_truncate (ce_s, tmp, 0);
 		   }
@@ -2539,8 +2539,8 @@ cs_process_all_all_constraints (VEC (ce_s, heap) *lhsc, VEC (ce_s, heap) *rhsc, 
    print_assignment_data ();
 #endif
 
-   FOR_EACH_VEC_ELT (ce_s, lhsc, i, lhsp) {
-       FOR_EACH_VEC_ELT (ce_s, rhsc, j, rhsp) {
+   FOR_EACH_VEC_ELT_NEW (ce_s, lhsc, i, lhsp) {
+       FOR_EACH_VEC_ELT_NEW (ce_s, rhsc, j, rhsp) {
            DEBUG ("\ncs_process_all_all_constraints loop");
 	   DEBUG ("\nlhsp %d offset %llu, rhsp %d offset %llu\n", 
 		lhsp->var, lhsp->offset, rhsp->var, rhsp->offset);
@@ -2568,7 +2568,7 @@ cs_get_constraint_for_address_of (tree t, VEC (ce_s, heap) **results, basic_bloc
    DEBUG ("\ncs_get_constraint_for_address_of");
 
    cs_get_constraint_for_1 (t, results, true, true, bb, cnode);
-   FOR_EACH_VEC_ELT (ce_s, *results, i, c) {
+   FOR_EACH_VEC_ELT_NEW (ce_s, *results, i, c) {
        if (c->type == DEREF)
 	   c->type = SCALAR;
        else
@@ -3235,7 +3235,7 @@ process_gimple_assign_stmt (gimple stmt, basic_block bb, struct cgraph_node * cn
 #if DEBUG_CONTAINER
 		struct constraint_expr *rhsp;
 		unsigned j;
-                FOR_EACH_VEC_ELT (ce_s, rhsc, j, rhsp) {
+                FOR_EACH_VEC_ELT_NEW (ce_s, rhsc, j, rhsp) {
 	           DEBUG ("\nrhsp %d offset %llu\n", rhsp->var, rhsp->offset);
 		}
 #endif
@@ -3350,7 +3350,7 @@ process_gimple_condition(gimple stmt, basic_block bb, struct cgraph_node * cnode
    if (field_must_have_pointers (op0) && TREE_CODE (op0) != ADDR_EXPR) {
        VEC (ce_s, heap) *results = NULL;
        cs_get_constraint_for (op0, &results, bb, cnode);
-       FOR_EACH_VEC_ELT (ce_s, results, i, exp)
+       FOR_EACH_VEC_ELT_NEW (ce_s, results, i, exp)
 	// DEBUG ("\ngenerate liveness for %d",exp->var);
            ((block_information *)(bb->aux))->add_to_parsed_data_indices (exp->var, false, bb);	// generate_liveness_constraint
        VEC_free (ce_s, heap, results);
@@ -3358,7 +3358,7 @@ process_gimple_condition(gimple stmt, basic_block bb, struct cgraph_node * cnode
    if (field_must_have_pointers (op1) && TREE_CODE (op1) != ADDR_EXPR) {
        VEC (ce_s, heap) *results = NULL;
        cs_get_constraint_for (op1, &results, bb, cnode);
-       FOR_EACH_VEC_ELT (ce_s, results, i, exp)
+       FOR_EACH_VEC_ELT_NEW (ce_s, results, i, exp)
 	// DEBUG ("\n%d generate liveness for",exp->var);
            ((block_information *)(bb->aux))->add_to_parsed_data_indices (exp->var, false, bb);	// generate_liveness_constraint
        VEC_free (ce_s, heap, results);
@@ -3519,7 +3519,7 @@ generate_retval_liveness (gimple stmt, basic_block bb, struct cgraph_node * cnod
        unsigned int i;
 
        cs_get_constraint_for (retval, &rhsc, bb, cnode);
-       FOR_EACH_VEC_ELT (ce_s, rhsc, i, rhs)
+       FOR_EACH_VEC_ELT_NEW (ce_s, rhsc, i, rhs)
        {
           ((block_information *)(bb->aux))->add_to_parsed_data_indices (rhs->var, false, bb);	// generate_liveness_constraint
 	  DEBUG ("\nPushed rhs->var %d", rhs->var);
@@ -3689,7 +3689,7 @@ study_loops ()
 	// Studying loops
 	loop_iterator li;
 	struct loop * loop;
-	FOR_EACH_LOOP (li, loop, 0)
+	FOR_EACH_LOOP_NEW (li, loop, 0)
 	{
 		basic_block head = loop->header;
 		DEBUG ("\nheader block: %d", head->index);
@@ -4340,7 +4340,7 @@ get_function_arguments (basic_block call_site, struct cgraph_node * src_function
                cs_get_constraint_for (arg, &results, call_site, src_function);
        	       struct constraint_expr *exp;
                unsigned i;
-               FOR_EACH_VEC_ELT (ce_s, results, i, exp)
+               FOR_EACH_VEC_ELT_NEW (ce_s, results, i, exp)
 	       {
 	           DEBUG ("\narg_info %d", exp->var);
 		   args.insert (exp->var);
