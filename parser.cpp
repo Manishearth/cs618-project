@@ -2211,7 +2211,7 @@ cs_get_constraint_for_component_ref (tree t, VEC(ce_s, heap) **results,
 	   /* If we are going to take the address of this field then
 	      to be able to compute reachability correctly add at least
 	      the last field of the variable.  */
-	   if (address_p && VEC_length (ce_s, *results) == 0) {
+	   if (address_p && VEC_length (ce_s, (*results)) == 0) {
 	       curr = cs_get_varinfo (cexpr.var);
 	       while (curr->next)
 		   curr = curr->next;

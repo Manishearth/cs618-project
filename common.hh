@@ -20,6 +20,8 @@
 #include "gimple-pretty-print.h"
 //#include "tree-flow.h"
 #include "tree-pass.h"
+#include "tree-cfg.h"
+#include "tree-cfgcleanup.h"
 #include "tree-ssa-alias.h"
 #include "toplev.h"
 #include "gimple-expr.h"
