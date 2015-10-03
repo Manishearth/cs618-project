@@ -36,7 +36,7 @@ parser ()
 }
 
 void parser::
-map_arguments_at_call (gimple stmt, tree decl, bool generate_liveness, basic_block bb, struct cgraph_node * cnode)
+map_arguments_at_call (gimple stmt, tree decl, bool generate_liveness, basic_block bb, CGRAPH_NODE * cnode)
 {
    DEBUG ("\nmap_arguments_at_call");
 
@@ -103,7 +103,7 @@ map_arguments_at_call (gimple stmt, tree decl, bool generate_liveness, basic_blo
 // Added by Vini
 
 void parser::
-map_function_pointer_arguments (struct cgraph_node * src_function, basic_block call_site, struct cgraph_node * called_function)
+map_function_pointer_arguments (CGRAPH_NODE * src_function, basic_block call_site, CGRAPH_NODE * called_function)
 {
    DEBUG ("\nmap_function_pointer_arguments()");
    DEBUG ("\nsrc_function=%s", cgraph_node_name (src_function));
@@ -181,7 +181,7 @@ map_function_pointer_arguments (struct cgraph_node * src_function, basic_block c
   has been made) at the return block. 
   ------------------------------------------------------------------------------------*/
 void parser::
-map_return_value (basic_block call_block, struct cgraph_node * src_function, basic_block end_block, struct cgraph_node * called_function)
+map_return_value (basic_block call_block, CGRAPH_NODE * src_function, basic_block end_block, CGRAPH_NODE * called_function)
 {
    DEBUG ("\nmap_return_value");
    bool found_rhs = true;
@@ -233,7 +233,7 @@ map_return_value (basic_block call_block, struct cgraph_node * src_function, bas
 }
 
 void parser::
-process_library_call (gimple stmt, basic_block bb, struct cgraph_node * cnode)
+process_library_call (gimple stmt, basic_block bb, CGRAPH_NODE * cnode)
 {
 
    DEBUG ("\nin process lib");
@@ -904,14 +904,14 @@ parm_decl (unsigned int varid)
 	  == PARM_DECL);
 }
 
-struct cgraph_node * parser::
+CGRAPH_NODE * parser::
 scoping_fn (unsigned int varid)
 {
    return cs_get_varinfo (varid)->scoping_function;
 }
 
 bool parser::
-var_defined_in_cfun (unsigned int varid, struct cgraph_node * cnode)
+var_defined_in_cfun (unsigned int varid, CGRAPH_NODE * cnode)
 {
    return (cnode == scoping_fn (varid));
 }
@@ -958,7 +958,7 @@ parameter_var (csvarinfo_t var)
 /* Given a gimple tree T, return the constraint expression vector for it
    to be used as the rhs of a constraint.  */
 void parser::
-cs_get_constraint_for_rhs (tree t, VEC (ce_s, heap) **results, basic_block bb, struct cgraph_node * cnode)
+cs_get_constraint_for_rhs (tree t, VEC (ce_s, heap) **results, basic_block bb, CGRAPH_NODE * cnode)
 {
    gcc_assert (VEC_length (ce_s, *results) == 0);
    cs_get_constraint_for_1 (t, results, false, false, bb, cnode);
@@ -968,7 +968,7 @@ cs_get_constraint_for_rhs (tree t, VEC (ce_s, heap) **results, basic_block bb, s
    named NAME, and using constraint graph node NODE.  Append it
    to the vector of variable info structures.  */
 csvarinfo_t parser::
-cs_new_var_info (tree t, const char *name, struct cgraph_node * cnode)
+cs_new_var_info (tree t, const char *name, CGRAPH_NODE * cnode)
 {
    unsigned index = VEC_length (csvarinfo_t, csvarmap);
    DEBUG ("\n(csvarinfo_t) pool_alloc (csvarinfo_pool)");
@@ -1004,7 +1004,7 @@ cs_new_var_info (tree t, const char *name, struct cgraph_node * cnode)
    This will also create any varinfo structures necessary for fields
    of DECL.  */
 csvarinfo_t parser::
-cs_create_variable_info_for_1 (tree decl, const char *name, struct cgraph_node * cnode)
+cs_create_variable_info_for_1 (tree decl, const char *name, CGRAPH_NODE * cnode)
 {
    DEBUG ("\ncs_create_variable_info_for_1");
    DEBUG ("\nCreating var %s", name);
@@ -1151,7 +1151,7 @@ cs_create_variable_info_for_1 (tree decl, const char *name, struct cgraph_node *
 }
 
 unsigned int parser::
-cs_create_variable_info_for (tree decl, const char *name, basic_block bb, struct cgraph_node * cnode)
+cs_create_variable_info_for (tree decl, const char *name, basic_block bb, CGRAPH_NODE * cnode)
 {
    DEBUG ("\ncs_create_variable_info_for\n");
    DEBUG ("\nname %s\n", name);
@@ -1213,7 +1213,7 @@ cs_create_variable_info_for (tree decl, const char *name, basic_block bb, struct
  */
 
   csvarinfo_t parser::
-cs_get_vi_for_tree (tree stmt, basic_block bb, struct cgraph_node * cnode)
+cs_get_vi_for_tree (tree stmt, basic_block bb, CGRAPH_NODE * cnode)
 {
    DEBUG ("\ncs_get_vi_for_tree");
    tree t = SSAVAR (stmt);
@@ -1255,7 +1255,7 @@ cs_lookup_vi_for_tree (tree t)
 
 /* Get a scalar constraint expression for a new temporary variable.  */
 struct constraint_expr parser::
-cs_new_scalar_tmp_constraint_exp (const char *name, struct cgraph_node * cnode)
+cs_new_scalar_tmp_constraint_exp (const char *name, CGRAPH_NODE * cnode)
 {
    struct constraint_expr tmp;
    csvarinfo_t vi;
@@ -1514,7 +1514,7 @@ get_casted_inside_type (tree ptr)
  */
 
 tree parser::
-get_heap_decl (tree lhs, basic_block bb, struct cgraph_node * cnode)
+get_heap_decl (tree lhs, basic_block bb, CGRAPH_NODE * cnode)
 {
 	DEBUG ("\nget_heap_decl()");
 	// Get inside of POINTER_TYPE lhs i.e. get the type of the heap
@@ -1552,7 +1552,7 @@ get_heap_decl (tree lhs, basic_block bb, struct cgraph_node * cnode)
 /* Create a new heap variable with NAME. Return the created variable.  */
 
 csvarinfo_t parser::
-cs_make_heapvar_for (tree lhs, const char *name, basic_block bb, struct cgraph_node * cnode)
+cs_make_heapvar_for (tree lhs, const char *name, basic_block bb, CGRAPH_NODE * cnode)
 {
 	/* Append 'heap' with the its index in csvarinfo. */
 	char *tempname;
@@ -1595,7 +1595,7 @@ cs_make_heapvar_offset_for (csvarinfo_t original_heap,
 	unsigned int offset, 
 	const char * heap_name, 
 	basic_block bb, 
-	struct cgraph_node * cnode)
+	CGRAPH_NODE * cnode)
 {
 	// Benchmark bzip2. default_bzalloc() returns heap with 'void *'. Its
 	// type cannot be derived. This is not an error.
@@ -1669,7 +1669,7 @@ cs_make_heapvar_offset_for (csvarinfo_t original_heap,
    Return the created variable.  */
 
 csvarinfo_t parser::
-cs_make_heapvar_for (csvarinfo_t lhs, const char *name, basic_block bb, struct cgraph_node * cnode)
+cs_make_heapvar_for (csvarinfo_t lhs, const char *name, basic_block bb, CGRAPH_NODE * cnode)
 {
   csvarinfo_t vi;
   tree heapvar;
@@ -1703,7 +1703,7 @@ cs_make_heapvar_for (csvarinfo_t lhs, const char *name, basic_block bb, struct c
 // FIXME: Simply create H.F, H.G etc when H is created in parser::variable_data.
 
 csvarinfo_t parser::
-cs_make_heapvar_offset_for (csvarinfo_t original_heap, tree heap_pointer_type, unsigned int offset, const char *name, basic_block bb, struct cgraph_node * cnode)
+cs_make_heapvar_offset_for (csvarinfo_t original_heap, tree heap_pointer_type, unsigned int offset, const char *name, basic_block bb, CGRAPH_NODE * cnode)
 {
   csvarinfo_t vi;
   tree heapvar;
@@ -1912,7 +1912,7 @@ cs_make_constraint_from (csvarinfo_t vi, int from, basic_block bb)
 /* Create a new artificial heap variable with NAME and make a
    constraint from it to LHS.  Return the created variable.  */
 csvarinfo_t parser::
-cs_make_constraint_from_heapvar (tree lhs, const char *name, basic_block bb, struct cgraph_node * cnode)
+cs_make_constraint_from_heapvar (tree lhs, const char *name, basic_block bb, CGRAPH_NODE * cnode)
 {
    csvarinfo_t vi = cs_make_heapvar_for (lhs, name, bb, cnode);
    csvarinfo_t lhs_var = cs_get_vi_for_tree (lhs, bb, cnode);
@@ -1952,7 +1952,7 @@ cs_first_or_preceding_vi_for_offset (csvarinfo_t start,
    DEREF (DEREF) = (temp = DEREF1; result = DEREF(temp))
    This is needed so that we can handle dereferencing DEREF constraints.  */
 void parser::
-cs_do_deref (VEC (ce_s, heap) **constraints, basic_block bb, struct cgraph_node * cnode)
+cs_do_deref (VEC (ce_s, heap) **constraints, basic_block bb, CGRAPH_NODE * cnode)
 {
    DEBUG ("\ncs_do_deref()");
    struct constraint_expr *c;
@@ -1986,7 +1986,7 @@ cs_do_deref (VEC (ce_s, heap) **constraints, basic_block bb, struct cgraph_node 
    resulting constraint expressions in *RESULTS.  */
 void parser::
 cs_get_constraint_for_ptr_offset (tree ptr, tree offset,
-       VEC (ce_s, heap) **results, basic_block bb, struct cgraph_node * cnode)
+       VEC (ce_s, heap) **results, basic_block bb, CGRAPH_NODE * cnode)
 {
    DEBUG ("\ncs_get_constraint_for_ptr_offset()");
    struct constraint_expr c;
@@ -2094,7 +2094,7 @@ cs_get_constraint_for_ptr_offset (tree ptr, tree offset,
    as the lhs.  */
 void parser::
 cs_get_constraint_for_component_ref (tree t, VEC(ce_s, heap) **results,
-				  bool address_p, bool lhs_p, basic_block bb, struct cgraph_node * cnode)
+				  bool address_p, bool lhs_p, basic_block bb, CGRAPH_NODE * cnode)
 {
    DEBUG ("\ncs_get_constraint_for_component_ref");
 
@@ -2211,7 +2211,7 @@ cs_get_constraint_for_component_ref (tree t, VEC(ce_s, heap) **results,
 	   /* If we are going to take the address of this field then
 	      to be able to compute reachability correctly add at least
 	      the last field of the variable.  */
-	   if (address_p && VEC_length (ce_s, *results) == 0) {
+	   if (address_p && VEC_length (ce_s, (*results)) == 0) {
 	       curr = cs_get_varinfo (cexpr.var);
 	       while (curr->next)
 		   curr = curr->next;
@@ -2294,7 +2294,7 @@ cs_get_constraint_for_component_ref (tree t, VEC(ce_s, heap) **results,
 /* Get a constraint expression vector from an SSA_VAR_P node.
    If address_p is true, the result will be taken its address of.  */
 void parser::
-cs_get_constraint_for_ssa_var (tree t, VEC(ce_s, heap) **results, bool address_p, basic_block bb, struct cgraph_node * cnode)
+cs_get_constraint_for_ssa_var (tree t, VEC(ce_s, heap) **results, bool address_p, basic_block bb, CGRAPH_NODE * cnode)
 {
    DEBUG ("\ncs_get_constraint_for_ssa_var");
    struct constraint_expr cexpr;
@@ -2353,7 +2353,7 @@ cs_get_constraint_for_ssa_var (tree t, VEC(ce_s, heap) **results, bool address_p
 /* Given a tree T, return the constraint expression for it.  */
 void parser::
 cs_get_constraint_for_1 (tree t, VEC (ce_s, heap) **results, bool address_p,
-		      bool lhs_p, basic_block bb, struct cgraph_node * cnode)
+		      bool lhs_p, basic_block bb, CGRAPH_NODE * cnode)
 {
    DEBUG ("\ncs_get_constraint_for_1");
    struct constraint_expr temp;
@@ -2561,7 +2561,7 @@ cs_process_all_all_constraints (VEC (ce_s, heap) *lhsc, VEC (ce_s, heap) *rhsc, 
 /* Given a tree T, return the constraint expression for taking the
    address of it. */
 void parser::
-cs_get_constraint_for_address_of (tree t, VEC (ce_s, heap) **results, basic_block bb, struct cgraph_node * cnode)
+cs_get_constraint_for_address_of (tree t, VEC (ce_s, heap) **results, basic_block bb, CGRAPH_NODE * cnode)
 {
    struct constraint_expr *c;
    unsigned int i;
@@ -2578,7 +2578,7 @@ cs_get_constraint_for_address_of (tree t, VEC (ce_s, heap) **results, basic_bloc
 
 /* Given a gimple tree T, return the constraint expression vector for it.  */
 void parser::
-cs_get_constraint_for (tree t, VEC (ce_s, heap) **results, basic_block bb, struct cgraph_node * cnode)
+cs_get_constraint_for (tree t, VEC (ce_s, heap) **results, basic_block bb, CGRAPH_NODE * cnode)
 {
   gcc_assert (VEC_length (ce_s, *results) == 0);
   DEBUG ("\ncs_get_constraint_for\n");
@@ -2588,7 +2588,7 @@ cs_get_constraint_for (tree t, VEC (ce_s, heap) **results, basic_block bb, struc
 /* Creation function node for DECL, using NAME, and return the index
    of the variable we've created for the function.  */
 csvarinfo_t parser::
-cs_create_func_info_for (tree decl, const char *name, struct cgraph_node * cnode)
+cs_create_func_info_for (tree decl, const char *name, CGRAPH_NODE * cnode)
 {
    csvarinfo_t vi, prev_vi;
    tree arg;
@@ -2710,7 +2710,7 @@ cs_first_vi_for_offset (csvarinfo_t start, unsigned HOST_WIDE_INT offset)	/* Loo
 /* Handle aggregate copies by expanding into copies of the respective
    fields of the structures.  */
 void parser::
-cs_do_structure_copy (tree lhsop, tree rhsop, basic_block bb, struct cgraph_node * cnode)  /* Look into : Structure variables */
+cs_do_structure_copy (tree lhsop, tree rhsop, basic_block bb, CGRAPH_NODE * cnode)  /* Look into : Structure variables */
 {
    struct constraint_expr *lhsp, *rhsp;
    VEC (ce_s, heap) *lhsc = NULL, *rhsc = NULL;
@@ -2812,7 +2812,7 @@ cs_do_structure_copy (tree lhsop, tree rhsop, basic_block bb, struct cgraph_node
 }
 
 void parser::
-cs_init_base_vars (struct cgraph_node * cnode)
+cs_init_base_vars (CGRAPH_NODE * cnode)
 {
   // csvarinfo_t var_nothing, var_integer, var_undef;
  csvarinfo_t var_nothing, var_readonly, var_escaped, var_undef, var_universal;
@@ -2887,7 +2887,7 @@ is_pred_of_end_block (basic_block block)
 }
 
 basic_block parser::
-get_end_block_of_function (struct cgraph_node *node)
+get_end_block_of_function (CGRAPH_NODE *node)
 {
 	// Added by Vini
         struct function * fun = DECL_STRUCT_FUNCTION (node->decl);
@@ -2945,7 +2945,7 @@ get_end_block_of_function (struct cgraph_node *node)
 }
 
 basic_block parser::
-get_start_block_of_function (struct cgraph_node *node)
+get_start_block_of_function (CGRAPH_NODE *node)
 {
 	// Added by Vini
 	struct function * fun = DECL_STRUCT_FUNCTION (node->decl);
@@ -2963,15 +2963,15 @@ get_start_block_of_function (struct cgraph_node *node)
 }
 
 void parser::
-cs_init_alias_vars (struct cgraph_node * cnode)
+cs_init_alias_vars (CGRAPH_NODE * cnode)
 {
   // VEC (ce_s, heap) *results = NULL;
   // struct constraint_expr csexpr;
   // This gives segmentation fault if constraint_expr contains list<>.
   // VEC_safe_push (ms_s, heap, results, &csexpr);
 
-   csvarmap = VEC_alloc (csvarinfo_t, heap, 200);
-   aliases = VEC_alloc (constraint_t, heap, 200);
+   VEC_alloc_NEW(csvarmap, csvarinfo_t, heap, 200);
+   VEC_alloc_NEW(aliases, constraint_t, heap, 200);
    DEBUG ("\ncreate_alloc_pool (constraint)");
    DEBUG ("\ncreate_alloc_pool (csvariable_info)");
    constraint_pool = create_alloc_pool ("Constraint pool", sizeof (struct constraint), 200);
@@ -3131,7 +3131,7 @@ possibly_deref (gimple stmt)
 /* Associate node with varinfo DATA. Worker for
    cgraph_for_node_and_aliases.  */
 bool parser::
-associate_varinfo_to_alias (struct cgraph_node *node, void *data)
+associate_varinfo_to_alias (CGRAPH_NODE *node, void *data)
 {
   if (node->alias || node->thunk.thunk_p)
     cs_insert_vi_for_tree (node->decl, (csvarinfo_t)data);
@@ -3140,7 +3140,7 @@ associate_varinfo_to_alias (struct cgraph_node *node, void *data)
 
 
 void parser::
-process_gimple_assign_stmt (gimple stmt, basic_block bb, struct cgraph_node * cnode)
+process_gimple_assign_stmt (gimple stmt, basic_block bb, CGRAPH_NODE * cnode)
 {
 	DEBUG ("\nprocess_gimple_assign_stmt");
 	tree lhsop = gimple_assign_lhs (stmt);
@@ -3339,7 +3339,7 @@ process_gimple_assign_stmt (gimple stmt, basic_block bb, struct cgraph_node * cn
 
 
 void parser::
-process_gimple_condition(gimple stmt, basic_block bb, struct cgraph_node * cnode)
+process_gimple_condition(gimple stmt, basic_block bb, CGRAPH_NODE * cnode)
 {
  struct constraint_expr *exp;
    unsigned i;
@@ -3369,7 +3369,7 @@ process_gimple_condition(gimple stmt, basic_block bb, struct cgraph_node * cnode
 /* Find out aliases for PHI statements. */
 
 void parser::
-process_gimple_phi_stmt (gimple stmt, basic_block bb, struct cgraph_node * cnode)
+process_gimple_phi_stmt (gimple stmt, basic_block bb, CGRAPH_NODE * cnode)
 {
    VEC(ce_s, heap) *lhsc = NULL;
    VEC(ce_s, heap) *rhsc = NULL;
@@ -3507,7 +3507,7 @@ is_gimple_endblock (gimple t)
 }
 
 void parser::
-generate_retval_liveness (gimple stmt, basic_block bb, struct cgraph_node * cnode)
+generate_retval_liveness (gimple stmt, basic_block bb, CGRAPH_NODE * cnode)
 {
    DEBUG ("\ngenerate_retval_liveness ()");
    tree retval = gimple_return_retval (stmt);
@@ -3530,7 +3530,7 @@ generate_retval_liveness (gimple stmt, basic_block bb, struct cgraph_node * cnod
 /* Iterate over all the PHI nodes of the basic block and 
    calculate alias info for them. */
 bool parser::
-process_phi_pointers (basic_block bb, struct cgraph_node * cnode)
+process_phi_pointers (basic_block bb, CGRAPH_NODE * cnode)
 {
    gimple_stmt_iterator gsi;
    DEBUG ("\nin process phi pointers");
@@ -3608,14 +3608,14 @@ split_bb_at_stmt (basic_block & bb, gimple stmt)
 void parser:: 
 initialization (void) 
 { 
-   struct cgraph_node * cnode = NULL; 
+   CGRAPH_NODE * cnode = NULL; 
   // init_alias_heapvars (); 
    cs_init_alias_vars (cnode); 
    bool is_first_cnode = true;
  
-   for (cnode = cgraph_nodes; cnode; cnode = cnode->next) { 
+   for (cnode = cgraph_nodes; cnode; cnode = CGRAPH_CAST cnode->next) { 
  
-       struct cgraph_node *alias; 
+       CGRAPH_NODE *alias; 
        csvarinfo_t vi; 
  
        /* Nodes without a body, and clone nodes are not interesting. */ 
@@ -3629,7 +3629,7 @@ initialization (void)
        //if (strcmp (cgraph_node_name (cnode), "int main()") == 0)
        if (strcmp (IDENTIFIER_POINTER (DECL_NAME (cnode->decl)), "main") == 0)
        {
-           main_cnode = cnode; 
+           main_cnode = CGRAPH_CAST cnode; 
            DEBUG ("\nFound main function '%s'", IDENTIFIER_POINTER (DECL_NAME (cnode->decl)));
            DEBUG ("\nFound main function '%s'", cgraph_node_name (cnode));
        }
@@ -3687,7 +3687,7 @@ study_loops ()
 	DEBUG ("\nnumber_of_loops = %d", number_of_loops ());
 
 	// Studying loops
-	loop_iterator li;
+	LOOP_ITERATOR(li);
 	struct loop * loop;
 	FOR_EACH_LOOP_NEW (li, loop, 0)
 	{
@@ -3751,8 +3751,8 @@ preprocess_control_flow_graph ()
 	// form x=&y to the block after START_BLOCK of main_cnode.
 	add_global_addressof_initializations ();
 
-	struct cgraph_node * cnode;
-	for (cnode = cgraph_nodes; cnode; cnode = cnode->next) 
+	CGRAPH_NODE * cnode;
+	for (cnode = cgraph_nodes; cnode; cnode = CGRAPH_CAST cnode->next) 
 	{
 		// Nodes without a body, and clone nodes are not interesting.
 		if (!gimple_has_body_p (cnode->decl) || cnode->clone_of)
@@ -4080,8 +4080,8 @@ restore_control_flow_graph ()
 	FUNCTION_NAME ();
 #endif 
 
-   struct cgraph_node * cnode;
-   for (cnode = cgraph_nodes; cnode; cnode = cnode->next) 
+   CGRAPH_NODE * cnode;
+   for (cnode = cgraph_nodes; cnode; cnode = CGRAPH_CAST cnode->next) 
    {
        if (!gimple_has_body_p (cnode->decl) || cnode->clone_of)
            continue;
@@ -4209,8 +4209,8 @@ delete_parsed_data (basic_block block)
 void parser::
 delete_block_aux()
 {
-        struct cgraph_node * cnode;
-        for (cnode = cgraph_nodes; cnode; cnode = cnode->next)
+        CGRAPH_NODE * cnode;
+        for (cnode = cgraph_nodes; cnode; cnode = CGRAPH_CAST cnode->next)
         {
                 if (!gimple_has_body_p (cnode->decl) || cnode->clone_of)
 	                continue;
@@ -4322,7 +4322,7 @@ get_global_named_pointers ()
 }
 
 set<unsigned int> parser::
-get_function_arguments (basic_block call_site, struct cgraph_node * src_function)
+get_function_arguments (basic_block call_site, CGRAPH_NODE * src_function)
 {
    // FIXME: check that this a call_site has only one statement.
    gimple_stmt_iterator gsi = gsi_start_bb (call_site);
@@ -4352,7 +4352,7 @@ get_function_arguments (basic_block call_site, struct cgraph_node * src_function
 }
 
 set<unsigned int> parser::
-get_function_parameters (struct cgraph_node * function)
+get_function_parameters (CGRAPH_NODE * function)
 {
 	set<unsigned int> function_parameters;
 	tree args;
@@ -4376,7 +4376,7 @@ get_function_parameters (struct cgraph_node * function)
 }
 
 set<unsigned int> parser::
-get_local_variables (struct cgraph_node * function)
+get_local_variables (CGRAPH_NODE * function)
 {
 #if DEBUG_CONTAINER
 	FUNCTION_NAME ();
@@ -4389,7 +4389,7 @@ get_local_variables (struct cgraph_node * function)
 	for (int index = 0; index < VEC_length (csvarinfo_t, variable_data); index++)
 	{
 		csvarinfo_t variable = cs_get_varinfo (index);
-		struct cgraph_node * cnode = variable->scoping_function;
+		CGRAPH_NODE * cnode = variable->scoping_function;
 		if (cnode && function == cnode && variable->decl 
 			// Can this ever be the case?
 			&& TREE_CODE(variable->decl) != PARM_DECL
@@ -4437,7 +4437,7 @@ get_local_variables (struct cgraph_node * function)
  */
 
 set<unsigned int> parser::
-get_local_non_temp_pointers (struct cgraph_node * current_function)
+get_local_non_temp_pointers (CGRAPH_NODE * current_function)
 {
 	DEBUG ("\nget_local_non_temp_pointers");
 	DEBUG ("\nlocal_non_temp_pointers");
@@ -4446,7 +4446,7 @@ get_local_non_temp_pointers (struct cgraph_node * current_function)
 	for (int index = 0; index < VEC_length (csvarinfo_t, variable_data); index++)
 	{
 		csvarinfo_t variable = cs_get_varinfo (index);
-		struct cgraph_node * cnode = variable->scoping_function;
+		CGRAPH_NODE * cnode = variable->scoping_function;
 		if (cnode && current_function == cnode 
 			&& variable->decl 
 			&& !DECL_ARTIFICIAL (variable->decl)
@@ -4683,8 +4683,8 @@ print_parsed_data ()
 	DEBUG ("\nprint_parsed_data ()");
 	DEBUG ("\nUNKNOWN_OFFSET %llu", UNKNOWN_OFFSET);
 
-   	struct cgraph_node * cnode = NULL; 
-	for (cnode = cgraph_nodes; cnode; cnode = cnode->next) 
+   	CGRAPH_NODE * cnode = NULL; 
+	for (cnode = cgraph_nodes; cnode; cnode = CGRAPH_CAST cnode->next) 
 	{
 		// Nodes without a body, and clone nodes are not interesting.
 		if (!gimple_has_body_p (cnode->decl) || cnode->clone_of)
@@ -4707,8 +4707,8 @@ print_original_cfg ()
 	FUNCTION_NAME ();
 #endif 
 
-   	struct cgraph_node * cnode = NULL; 
-	for (cnode = cgraph_nodes; cnode; cnode = cnode->next) 
+   	CGRAPH_NODE * cnode = NULL; 
+	for (cnode = cgraph_nodes; cnode; cnode = CGRAPH_CAST cnode->next) 
 	{
 		// Nodes without a body, and clone nodes are not interesting.
 		if (!gimple_has_body_p (cnode->decl) || cnode->clone_of)
