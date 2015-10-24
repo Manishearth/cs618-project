@@ -885,10 +885,10 @@ void parser::
 cs_insert_vi_for_tree (tree t, csvarinfo_t vi)
 {
    DEBUG ("\ncs_insert_vi_for_tree\n");
-   void **slot = pointer_map_insert (vi_for_tree, t);
+   void **slot = POINTER_MAP_INSERT (vi_for_tree, t, vi);
    gcc_assert (vi);
    gcc_assert (*slot == NULL);
-   *slot = vi;
+   // *slot = vi;
 }
 
 bool parser::

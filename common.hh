@@ -91,11 +91,15 @@
 
 #define VEC_iterate(ty, to_visit, idx, num) (to_visit)->iterate ((idx), &(num))
 
-#define pointer_map_create() new hash_map<tree, tree>
-#define pointer_map_t hash_map<tree, tree>
+
+#define pointer_map_create() new hash_map<tree, csvarinfo_t>
+#define pointer_map_contains(map, key) (void**)((map)->get(key))
+#define POINTER_MAP_INSERT(map, key, value) (void**)((map)->put(key, value)) // two step process for 4
+#define pointer_map_t hash_map<tree, csvarinfo_t>
 #define host_integerp(a,b) tree_fits_uhwi_p(a)
 
 #define TYPE_SIZE_(ty, ...) TYPE_SIZE(ty)
+
 
 #include "ggc.h"
 #include "alloc-pool.h"
@@ -114,3 +118,4 @@ using namespace std::tr1;
 //using namespace boost;
 #define RESULT(...) fprintf (dump_file , __VA_ARGS__)
 //#define RESULT(...)
+
