@@ -79,6 +79,8 @@
 #define IS_GIMPLE_RETURN(ret, stmt) greturn* (ret) = dyn_cast <greturn *> (stmt)
 // (gimple_code (stmt) == GIMPLE_RETURN) on 4
 
+#define VEC_iterate(ty, to_visit, idx, num) (to_visit)->iterate ((idx), &(num))
+
 #include "ggc.h"
 #include "alloc-pool.h"
 #include "params.h"
