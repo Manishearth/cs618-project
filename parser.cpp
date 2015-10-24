@@ -2020,7 +2020,7 @@ cs_get_constraint_for_ptr_offset (tree ptr, tree offset,
    n = VEC_length (ce_s, *results);
    for (j = 0; j < n; j++) {
        csvarinfo_t curr;
-       c = *VEC_index (ce_s, *results, j);
+       c = *VEC_index_2 (ce_s, *results, j);
        curr = cs_get_varinfo (c.var);
 
        /* If this varinfo represents a full variable just use it. */
@@ -2720,8 +2720,8 @@ cs_do_structure_copy (tree lhsop, tree rhsop, basic_block bb, CGRAPH_NODE * cnod
    cs_get_constraint_for (lhsop, &lhsc, bb, cnode);
    cs_get_constraint_for_rhs (rhsop, &rhsc, bb, cnode);
 
-   lhsp = VEC_index (ce_s, lhsc, 0);
-   rhsp = VEC_index (ce_s, rhsc, 0);
+   lhsp = VEC_index_2 (ce_s, lhsc, 0);
+   rhsp = VEC_index_2 (ce_s, rhsc, 0);
 
    DEBUG ("\nlhs var %d, type %d, offset %ld", lhsp->var, lhsp->type, lhsp->offset);
    DEBUG ("\nrhs var %d, type %d, offset %ld", rhsp->var, rhsp->type, lhsp->offset);
@@ -2771,7 +2771,7 @@ cs_do_structure_copy (tree lhsop, tree rhsop, basic_block bb, CGRAPH_NODE * cnod
        for (j = 0; VEC_iterate (ce_s, lhsc, j, lhsp);) {
            DEBUG ("\nIterate lhs");
            csvarinfo_t lhsv, rhsv;
-           rhsp = VEC_index (ce_s, rhsc, k);
+           rhsp = VEC_index_2 (ce_s, rhsc, k);
            lhsv = cs_get_varinfo (lhsp->var);
            rhsv = cs_get_varinfo (rhsp->var);
 	   DEBUG ("\nlhsv %s, rhsv %s", lhsv->name, rhsv->name);

@@ -29,6 +29,7 @@
 
 #include "gimple.h"
 
+#include "tree-dfa.h"
 #include "tree-ssa-operands.h"
 #include "tree-phinodes.h"
 
@@ -37,6 +38,10 @@
 #include "gimple-iterator.h"
 #include "gimple-ssa.h"
 #include "ssa-iterators.h"
+
+#include "stor-layout.h"
+
+
 #define VEC(t, gc) vec<t,gc>
 #define VEC_free(t,gc,o) o->~vec ()
 
@@ -51,7 +56,10 @@
 #define VEC_truncate(cs, vec, n) (vec)->truncate(n)
 #define VEC_last(cs,vec) &((vec)->last())
 #define VEC_index(cs, vec, idx) ((*(vec))[idx])
+#define VEC_index_2(cs, vec, idx) (&(*(vec))[idx])
 #define VEC_pop(cs,vec) &((vec)->pop())
+
+#define VEC_replace(cs,vec, idx, new_) (*vec)[idx] = *(new_)
 
 // #define VEC_safe_push(cs,gc, v, d) vec_safe_push((v), (d))
 #define VEC_safe_push(cs,gc, v, d) (v)->safe_push((d))
