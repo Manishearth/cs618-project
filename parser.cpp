@@ -206,9 +206,9 @@ map_return_value (basic_block call_block, CGRAPH_NODE * src_function, basic_bloc
             DEBUG ("\nreturn stmt: ");
             print_gimple_stmt (dump_file, ret_stmt, 0, 0);
 #endif
-            if (gimple_code (ret_stmt) == GIMPLE_RETURN)
+            if (IS_GIMPLE_RETURN(ret, ret_stmt))
             {
-               tree rhsop = gimple_return_retval (ret_stmt);
+               tree rhsop = gimple_return_retval (ret);
 	       if (rhsop != NULL_TREE)
                {
                   /* Map it to the return value of return statement. */
@@ -3510,7 +3510,10 @@ void parser::
 generate_retval_liveness (gimple stmt, basic_block bb, CGRAPH_NODE * cnode)
 {
    DEBUG ("\ngenerate_retval_liveness ()");
-   tree retval = gimple_return_retval (stmt);
+   tree retval;
+   if(IS_GIMPLE_RETURN(ret, stmt)) {
+      retval = gimple_return_retval (ret);
+   }
 
    if (retval!=NULL_TREE && field_must_have_pointers (retval)) {
        DEBUG ("\nNot pointer type");
@@ -3670,7 +3673,7 @@ add_global_addressof_initializations ()
 	// Insert global initializations of the form x=&y in BB
 	DEBUG ("\nadd_global_addressof_initializations (bb=%d)", bb->index);
 	struct varpool_node * global_var;
-	for (global_var = varpool_nodes; global_var; global_var = global_var->next)
+	FOR_EACH_VARIABLE (global_var)
 	{
 		if (field_must_have_pointers (global_var->decl))
 		{

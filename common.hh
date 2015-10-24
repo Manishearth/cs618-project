@@ -22,14 +22,19 @@
 #include "tree-pass.h"
 #include "tree-cfg.h"
 #include "tree-cfgcleanup.h"
-#include "tree-ssa-alias.h"
 #include "toplev.h"
 #include "gimple-expr.h"
+
+#include "tree-ssa-alias.h"
+
 #include "gimple.h"
+
+#include "tree-ssa-operands.h"
+#include "tree-phinodes.h"
+
 #include "cfgloop.h"
 #include "vec.h"
 #include "gimple-iterator.h"
-
 #include "gimple-ssa.h"
 #include "ssa-iterators.h"
 #define VEC(t, gc) vec<t,gc>
@@ -61,14 +66,18 @@
 #define CGRAPH_NODE cgraph_node //  = struct cgraph_node for 4
 #define cgraph_nodes cgraph_new_nodes[0] // is this correct?
 #define CGRAPH_CAST (cgraph_node*)
+#define VARPOOL_CAST (varpool_node*)
 
-#define VEC_alloc_NEW(vec, cs, h, len) vec.create(len) // vec = VEC_alloc(args...) in 4
+#define VEC_alloc_NEW(vec, cs, h, len) (vec)->create(len) // vec = VEC_alloc(args...) in 4
 
 #define FOR_EACH_BB(bb) FOR_EACH_BB_FN(bb, cfun)
  
 #define cgraph_node_name(node) node->asm_name()
 
 #define LOOP_ITERATOR(li)
+
+#define IS_GIMPLE_RETURN(ret, stmt) greturn* (ret) = dyn_cast <greturn *> (stmt)
+// (gimple_code (stmt) == GIMPLE_RETURN) on 4
 
 #include "ggc.h"
 #include "alloc-pool.h"
