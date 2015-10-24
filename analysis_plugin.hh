@@ -23,9 +23,11 @@ static unsigned int heap_analysis ();
 #ifdef WITH_GCC_5
 
 #include "context.h"
+
+#include "tree-pass.h"
 const pass_data pass_plugin_heap_data =
 {
-  GIMPLE_PASS, /* type */
+  SIMPLE_IPA_PASS, /* type */
   "heap", /* name */
   OPTGROUP_NONE, /* optinfo_flags */
   TV_INTEGRATION, /* tv_id */
@@ -44,9 +46,12 @@ public:
   {}
 
   /* opt_pass methods: */
-  unsigned int execute (function *) {
+  virtual unsigned int execute (function *) {
     return heap_analysis();
   }
+  virtual bool gate (function *) {return true;}
+
+  virtual pass_plugin_heap* clone() {return new pass_plugin_heap(g);}
 
 }; // class pass_dumb_plugin_example
 

@@ -587,13 +587,14 @@ push_fields_onto_fieldstack (tree type, VEC(fieldoff_s,heap) **fieldstack, HOST_
   		DEBUG ("\npush_fields 7--");
 	        DEBUG ("\nField %s 7--", get_name (field));
 		DEBUG ("\nbefore VEC_length (fieldoff_s, *fieldstack)=%d", VEC_length (fieldoff_s, *fieldstack)); 
-                pair = VEC_safe_push_3 (fieldoff_s, heap, *fieldstack, NULL);
-                pair->offset = 0;
-                pair->size = offset + foff;
-                pair->has_unknown_size = false;
-                pair->must_have_pointers = false;
-                pair->may_have_pointers = false;
-                pair->only_restrict_pointers = false;
+                fieldoff_s pair;
+                pair.offset = 0;
+                pair.size = offset + foff;
+                pair.has_unknown_size = false;
+                pair.must_have_pointers = false;
+                pair.may_have_pointers = false;
+                pair.only_restrict_pointers = false;
+                (*fieldstack)->safe_push(pair);
 		DEBUG ("\nafter VEC_length (fieldoff_s, *fieldstack)=%d", VEC_length (fieldoff_s, *fieldstack)); 
 		DEBUG ("\npair->offset=%lld", pair->offset);
 		DEBUG ("\n7-- pushed fields:");
@@ -640,20 +641,21 @@ push_fields_onto_fieldstack (tree type, VEC(fieldoff_s,heap) **fieldstack, HOST_
 	        DEBUG ("\nField %s 11--", get_name (field));
 		DEBUG ("\nbefore VEC_length (fieldoff_s, *fieldstack)=%d", VEC_length (fieldoff_s, *fieldstack)); 
 	        check (*fieldstack);
-                pair = VEC_safe_push_3 (fieldoff_s, heap, *fieldstack, NULL);	// PROBLEM: fieldstack not working
+                fieldoff_s pair; // PROBLEM: fieldstack not working
 	        check (*fieldstack);
-                pair->offset = offset + foff;
-                pair->has_unknown_size = has_unknown_size;
+                pair.offset = offset + foff;
+                pair.has_unknown_size = has_unknown_size;
                 if (!has_unknown_size)
-                  pair->size = TREE_INT_CST_LOW (DECL_SIZE (field));
+                  pair.size = TREE_INT_CST_LOW (DECL_SIZE (field));
                 else
-                  pair->size = -1;
-                pair->must_have_pointers = must_have_pointers_p;
-                pair->may_have_pointers = true;
-                pair->only_restrict_pointers
+                  pair.size = -1;
+                pair.must_have_pointers = must_have_pointers_p;
+                pair.may_have_pointers = true;
+                pair.only_restrict_pointers
                   = (!has_unknown_size
                      && POINTER_TYPE_P (TREE_TYPE (field))
                      && TYPE_RESTRICT (TREE_TYPE (field)));
+                (*fieldstack)->safe_push(pair);
 		DEBUG ("\nafter VEC_length (fieldoff_s, *fieldstack)=%d", VEC_length (fieldoff_s, *fieldstack)); 
 		DEBUG ("\npair->offset=%lld", pair->offset);
 		DEBUG ("\n11-- pushed fields:");
