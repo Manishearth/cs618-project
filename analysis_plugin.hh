@@ -6,8 +6,10 @@
 #include "common.hh"
 #include "parser.hh"
 
+
 #ifndef ANALYSIS_PLUGIN
 #define ANALYSIS_PLUGIN
+
 
 /*-----------------------------------------------------------------------------
  *  Each plugin MUST define this global int to assert compatibility with GPL; 
@@ -17,6 +19,68 @@ int plugin_is_GPL_compatible;
 
 /* The driver function for interprocedural heap analysis */
 static unsigned int heap_analysis ();
+
+#ifdef WITH_GCC_5
+
+#include "context.h"
+const pass_data pass_plugin_heap_data =
+{
+  GIMPLE_PASS, /* type */
+  "heap", /* name */
+  OPTGROUP_NONE, /* optinfo_flags */
+  TV_INTEGRATION, /* tv_id */
+  PROP_cfg, /* properties_required */
+  0, /* properties_provided */
+  0, /* properties_destroyed */
+  0, /* todo_flags_start */
+  0, /* todo_flags_finish */
+};
+
+class pass_plugin_heap : public simple_ipa_opt_pass
+{
+public:
+  pass_plugin_heap(gcc::context *ctxt)
+    : simple_ipa_opt_pass(pass_plugin_heap_data, ctxt)
+  {}
+
+  /* opt_pass methods: */
+  unsigned int execute (function *) {
+    return heap_analysis();
+  }
+
+}; // class pass_dumb_plugin_example
+
+/*-----------------------------------------------------------------------------
+ *  plugin_init is the first function to be called after the plugin is loaded
+ *-----------------------------------------------------------------------------*/
+  int
+plugin_init (struct plugin_name_args *plugin_info,
+    struct plugin_gcc_version *version)
+{
+
+        struct register_pass_info pass_info;
+        pass_info.pass = new pass_plugin_heap(g);
+        pass_info.reference_pass_name = "pta";
+        pass_info.ref_pass_instance_number = 0;
+        pass_info.pos_op = PASS_POS_INSERT_AFTER;
+
+
+        /*-----------------------------------------------------------------------------
+        * Plugins are activiated using this callback 
+        *-----------------------------------------------------------------------------*/
+        register_callback (
+        plugin_info->base_name,     /* char *name: Plugin name, could be any
+                                     name. plugin_info->base_name gives this
+                                     filename */
+        PLUGIN_PASS_MANAGER_SETUP,  /* int event: The event code. Here, setting
+                                     up a new pass */
+        NULL,                       /* The function that handles event */
+        &pass_info);                /* plugin specific data */
+
+        return 0;
+}
+
+#else
 
 
 /*-----------------------------------------------------------------------------
@@ -83,5 +147,7 @@ plugin_init (struct plugin_name_args *plugin_info,
 
         return 0;
 }
+
+#endif
 
 #endif 

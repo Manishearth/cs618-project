@@ -41,6 +41,7 @@
 
 #include "stor-layout.h"
 
+#define WITH_GCC_5
 
 #define VEC(t, gc) vec<t,gc>
 #define VEC_free(t,gc,o) o->~vec ()
