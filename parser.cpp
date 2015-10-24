@@ -587,7 +587,7 @@ push_fields_onto_fieldstack (tree type, VEC(fieldoff_s,heap) **fieldstack, HOST_
   		DEBUG ("\npush_fields 7--");
 	        DEBUG ("\nField %s 7--", get_name (field));
 		DEBUG ("\nbefore VEC_length (fieldoff_s, *fieldstack)=%d", VEC_length (fieldoff_s, *fieldstack)); 
-                pair = VEC_safe_push (fieldoff_s, heap, *fieldstack, NULL);
+                pair = VEC_safe_push_3 (fieldoff_s, heap, *fieldstack, NULL);
                 pair->offset = 0;
                 pair->size = offset + foff;
                 pair->has_unknown_size = false;
@@ -640,7 +640,7 @@ push_fields_onto_fieldstack (tree type, VEC(fieldoff_s,heap) **fieldstack, HOST_
 	        DEBUG ("\nField %s 11--", get_name (field));
 		DEBUG ("\nbefore VEC_length (fieldoff_s, *fieldstack)=%d", VEC_length (fieldoff_s, *fieldstack)); 
 	        check (*fieldstack);
-                pair = VEC_safe_push (fieldoff_s, heap, *fieldstack, NULL);	// PROBLEM: fieldstack not working
+                pair = VEC_safe_push_3 (fieldoff_s, heap, *fieldstack, NULL);	// PROBLEM: fieldstack not working
 	        check (*fieldstack);
                 pair->offset = offset + foff;
                 pair->has_unknown_size = has_unknown_size;
@@ -2039,7 +2039,7 @@ cs_get_constraint_for_ptr_offset (tree ptr, tree offset,
 	       if (c2.var != c.var)
 	       {
 		   DEBUG ("\npush c2");
-		   VEC_safe_push (ce_s, heap, *results, &c2);
+		   VEC_safe_push_2 (ce_s, heap, *results, &c2);
 	       }
 	       temp = temp->next;
 	   } while (temp);
@@ -2071,7 +2071,7 @@ cs_get_constraint_for_ptr_offset (tree ptr, tree offset,
 	       c2.type = ADDRESSOF;
 	       c2.offset = 0;
 	       DEBUG ("\npush c2");
-	       VEC_safe_push (ce_s, heap, *results, &c2);
+	       VEC_safe_push_2 (ce_s, heap, *results, &c2);
 	   }
 	   c.var = temp->id;
 	   c.offset = 0;
@@ -2119,7 +2119,7 @@ cs_get_constraint_for_component_ref (tree t, VEC(ce_s, heap) **results,
        temp.var = readonly_id;
        temp.type = SCALAR;
        DEBUG ("\npush temp");
-       VEC_safe_push (ce_s, heap, *results, &temp);
+       VEC_safe_push_2 (ce_s, heap, *results, &temp);
        return;
    }
 
@@ -2203,7 +2203,7 @@ cs_get_constraint_for_component_ref (tree t, VEC(ce_s, heap) **results,
 				    bitpos, bitmaxsize)) {
 		  cexpr.var = curr->id;
 		  DEBUG ("\ncexpr.var=%d curr->offset=%lld", cexpr.var);
-		  VEC_safe_push (ce_s, heap, *results, &cexpr);
+		  VEC_safe_push_2 (ce_s, heap, *results, &cexpr);
 		  if (address_p)
 		     break;
 	       }
@@ -2217,7 +2217,7 @@ cs_get_constraint_for_component_ref (tree t, VEC(ce_s, heap) **results,
 		   curr = curr->next;
 	       cexpr.var = curr->id;
                DEBUG ("\npush cexpr");
-	       VEC_safe_push (ce_s, heap, *results, &cexpr);
+	       VEC_safe_push_2 (ce_s, heap, *results, &cexpr);
 #if DEBUG_CONTAINER
 		DEBUG ("\naddress_p");
                struct constraint_expr *rhsp;
@@ -2340,14 +2340,14 @@ cs_get_constraint_for_ssa_var (tree t, VEC(ce_s, heap) **results, bool address_p
 	  
            DEBUG ("\nIndex of variable in loop %d",vi->id);
 
-	   VEC_safe_push (ce_s, heap, *results, &cexpr);
+	   VEC_safe_push_2 (ce_s, heap, *results, &cexpr);
       }
       DEBUG ("\nEnd of loop");
       return;
    }
 
    DEBUG ("\nPushing cexpr.var=%d", cexpr.var);
-   VEC_safe_push (ce_s, heap, *results, &cexpr);
+   VEC_safe_push_2 (ce_s, heap, *results, &cexpr);
 }
 
 /* Given a tree T, return the constraint expression for it.  */
@@ -2383,7 +2383,7 @@ cs_get_constraint_for_1 (tree t, VEC (ce_s, heap) **results, bool address_p,
            temp.offset = 0;
 	   DEBUG ("\nnull pointer");
 
-           VEC_safe_push (ce_s, heap, *results, &temp);
+           VEC_safe_push_2 (ce_s, heap, *results, &temp);
        }
        return;
    }
@@ -2397,7 +2397,7 @@ cs_get_constraint_for_1 (tree t, VEC (ce_s, heap) **results, bool address_p,
       temp.var = readonly_id;
       temp.type = SCALAR;
       temp.offset = 0;
-      VEC_safe_push (ce_s, heap, *results, &temp);
+      VEC_safe_push_2 (ce_s, heap, *results, &temp);
       return;
    }
 
@@ -2446,7 +2446,7 @@ cs_get_constraint_for_1 (tree t, VEC (ce_s, heap) **results, bool address_p,
 		       for (; curr; curr = curr->next) {
 		      	   if (curr->offset - vi->offset < size) {
 			       cs.var = curr->id;
-			       VEC_safe_push (ce_s, heap, *results, &cs);
+			       VEC_safe_push_2 (ce_s, heap, *results, &cs);
 			   }
 		           else
 			       break;
@@ -2498,7 +2498,7 @@ cs_get_constraint_for_1 (tree t, VEC (ce_s, heap) **results, bool address_p,
 		       unsigned j;
 		       cs_get_constraint_for_1 (val, &tmp, address_p, lhs_p, bb, cnode);
 		       FOR_EACH_VEC_ELT_NEW (ce_s, tmp, j, rhsp)
-		           VEC_safe_push (ce_s, heap, *results, rhsp);
+		           VEC_safe_push_2 (ce_s, heap, *results, rhsp);
 		       VEC_truncate (ce_s, tmp, 0);
 		   }
 	           VEC_free (ce_s, heap, tmp);

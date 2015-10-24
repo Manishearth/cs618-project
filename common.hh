@@ -32,8 +32,8 @@
 
 #include "gimple-ssa.h"
 #include "ssa-iterators.h"
-#define VEC(t, gc) auto_vec<t>
-#define VEC_free(t,gc,o) o->~auto_vec ()
+#define VEC(t, gc) vec<t,gc>
+#define VEC_free(t,gc,o) o->~vec ()
 
 #define heap va_heap
 #define DEF_VEC_O(x, ...) static bool o_##x = false
@@ -45,6 +45,12 @@
 #define VEC_last(cs,vec) &((vec)->last())
 #define VEC_index(cs, vec, idx) ((*vec)[idx])
 #define VEC_pop(cs,vec) &((vec)->pop())
+
+// #define VEC_safe_push(cs,gc, v, d) vec_safe_push((v), (d))
+#define VEC_safe_push(cs,gc, v, d) (v)->safe_push((d))
+#define VEC_safe_push_2(cs,gc, v, d) (v)->safe_push((*d))
+#define VEC_safe_push_3(cs,gc, v, d) (v)->safe_push((*(cs*)d)) // careful, nullptrderef is happening here
+
 
 #define FOR_EACH_VEC_ELT_NEW(a,b,c,d) FOR_EACH_VEC_ELT(*b,c,d) 
 //#define _FOR_EACH_VEC_ELT(a,b,c) FOR_EACH_VEC_ELT(a,b,c)
