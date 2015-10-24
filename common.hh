@@ -54,6 +54,7 @@
 #define VEC_length(cs, vec) (vec)->length()
 #define VEC_empty(cs, vec) (vec)->is_empty()
 #define VEC_truncate(cs, vec, n) (vec)->truncate(n)
+#define VEC_qsort(cs, vec, fun) (vec)->qsort(fun)
 #define VEC_last(cs,vec) &((vec)->last())
 #define VEC_index(cs, vec, idx) ((*(vec))[idx])
 #define VEC_index_2(cs, vec, idx) (&(*(vec))[idx])
