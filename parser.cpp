@@ -2971,7 +2971,8 @@ cs_init_alias_vars (CGRAPH_NODE * cnode)
   // struct constraint_expr csexpr;
   // This gives segmentation fault if constraint_expr contains list<>.
   // VEC_safe_push (ms_s, heap, results, &csexpr);
-
+   csvarmap = new vec<csvarinfo_t, heap>;
+   aliases = new vec<constraint_t, heap>;
    VEC_alloc_NEW(csvarmap, csvarinfo_t, heap, 200);
    VEC_alloc_NEW(aliases, constraint_t, heap, 200);
    DEBUG ("\ncreate_alloc_pool (constraint)");
@@ -3618,7 +3619,7 @@ initialization (void)
    cs_init_alias_vars (cnode); 
    bool is_first_cnode = true;
  
-   for (cnode = cgraph_nodes; cnode; cnode = CGRAPH_CAST cnode->next) { 
+   FOR_EACH_DEFINED_FUNCTION(cnode) { 
  
        CGRAPH_NODE *alias; 
        csvarinfo_t vi; 
@@ -3757,7 +3758,7 @@ preprocess_control_flow_graph ()
 	add_global_addressof_initializations ();
 
 	CGRAPH_NODE * cnode;
-	for (cnode = cgraph_nodes; cnode; cnode = CGRAPH_CAST cnode->next) 
+	FOR_EACH_DEFINED_FUNCTION(cnode)
 	{
 		// Nodes without a body, and clone nodes are not interesting.
 		if (!gimple_has_body_p (cnode->decl) || cnode->clone_of)
@@ -4086,7 +4087,7 @@ restore_control_flow_graph ()
 #endif 
 
    CGRAPH_NODE * cnode;
-   for (cnode = cgraph_nodes; cnode; cnode = CGRAPH_CAST cnode->next) 
+   FOR_EACH_DEFINED_FUNCTION(cnode)
    {
        if (!gimple_has_body_p (cnode->decl) || cnode->clone_of)
            continue;
@@ -4215,7 +4216,7 @@ void parser::
 delete_block_aux()
 {
         CGRAPH_NODE * cnode;
-        for (cnode = cgraph_nodes; cnode; cnode = CGRAPH_CAST cnode->next)
+        FOR_EACH_DEFINED_FUNCTION(cnode)
         {
                 if (!gimple_has_body_p (cnode->decl) || cnode->clone_of)
 	                continue;
@@ -4689,7 +4690,7 @@ print_parsed_data ()
 	DEBUG ("\nUNKNOWN_OFFSET %llu", UNKNOWN_OFFSET);
 
    	CGRAPH_NODE * cnode = NULL; 
-	for (cnode = cgraph_nodes; cnode; cnode = CGRAPH_CAST cnode->next) 
+	FOR_EACH_DEFINED_FUNCTION(cnode) 
 	{
 		// Nodes without a body, and clone nodes are not interesting.
 		if (!gimple_has_body_p (cnode->decl) || cnode->clone_of)
@@ -4713,7 +4714,7 @@ print_original_cfg ()
 #endif 
 
    	CGRAPH_NODE * cnode = NULL; 
-	for (cnode = cgraph_nodes; cnode; cnode = CGRAPH_CAST cnode->next) 
+	FOR_EACH_DEFINED_FUNCTION(cnode)
 	{
 		// Nodes without a body, and clone nodes are not interesting.
 		if (!gimple_has_body_p (cnode->decl) || cnode->clone_of)
