@@ -41,10 +41,10 @@
 #define DEF_VEC_ALLOC_O(x,...) static bool ao_##x = false
 #define DEF_VEC_ALLOC_P(x, ...) static bool ap_##x = false
 
-#define VEC_length(cs, vec) vec->length()
-#define VEC_last(cs,vec) &(vec->last())
+#define VEC_length(cs, vec) (vec)->length()
+#define VEC_last(cs,vec) &((vec)->last())
 #define VEC_index(cs, vec, idx) ((*vec)[idx])
-#define VEC_pop(cs,vec) &(vec->pop())
+#define VEC_pop(cs,vec) &((vec)->pop())
 
 #define FOR_EACH_VEC_ELT_NEW(a,b,c,d) FOR_EACH_VEC_ELT(*b,c,d) 
 //#define _FOR_EACH_VEC_ELT(a,b,c) FOR_EACH_VEC_ELT(a,b,c)
