@@ -2439,8 +2439,8 @@ cs_get_constraint_for_1 (tree t, VEC (ce_s, heap) **results, bool address_p,
 	      	   curr = vi->next;
 	      	   if (!vi->is_full_var && curr) {
 		       unsigned HOST_WIDE_INT size;
-		       if (host_integerp (TYPE_SIZE (TREE_TYPE (t)), 1))
-		           size = TREE_INT_CST_LOW (TYPE_SIZE (TREE_TYPE (t)));
+		       if (host_integerp (TYPE_SIZE_ (TREE_TYPE (t)), 1))
+		           size = TREE_INT_CST_LOW (TYPE_SIZE_ (TREE_TYPE (t)));
 		       else
 		           size = -1;
 		       for (; curr; curr = curr->next) {
