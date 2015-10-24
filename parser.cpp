@@ -2422,7 +2422,7 @@ cs_get_constraint_for_1 (tree t, VEC (ce_s, heap) **results, bool address_p,
 	 	   DEBUG ("\nMEM_REF");
 	           struct constraint_expr cs;
 	      	   csvarinfo_t vi, curr;
-	           tree off = double_int_to_tree (sizetype, mem_ref_offset (t));
+	           tree off = double_int_to_tree_ (sizetype, mem_ref_offset (t));
 	      	   cs_get_constraint_for_ptr_offset (TREE_OPERAND (t, 0), off, results, bb, cnode);
                    if (VEC_length (ce_s, *results) == 0)
                        return;

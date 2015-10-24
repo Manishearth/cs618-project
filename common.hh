@@ -101,6 +101,7 @@
 
 #define TYPE_SIZE_(ty, ...) TYPE_SIZE(ty)
 
+#define double_int_to_tree_(a,b) wide_int_to_tree(a,b) // ident on 4
 
 #include "ggc.h"
 #include "alloc-pool.h"
