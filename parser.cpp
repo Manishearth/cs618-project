@@ -3623,10 +3623,15 @@ initialization (void)
  
        CGRAPH_NODE *alias; 
        csvarinfo_t vi; 
- 
+
+       if (!cnode->has_gimple_body_p () || cnode->clone_of)
+              continue;
+
+       cnode->get_body(); 
+       // XXXXX
        /* Nodes without a body, and clone nodes are not interesting. */ 
-       if (!gimple_has_body_p (cnode->decl) || cnode->clone_of) 
-           continue; 
+       //if (!gimple_has_body_p (cnode->decl) || cnode->clone_of) 
+       //    continue; 
 
        // The first function is either main () or _GLOBAL__I_6535_0_test<..>.o ()
 
