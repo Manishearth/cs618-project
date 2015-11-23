@@ -21,8 +21,12 @@ plugin.so: block_information.o parser.o analysis_plugin.o
 
 
 TEST_OBJS=test.o
-test: $(TEST_OBJS) plugin.so
+debug: $(TEST_OBJS) plugin.so
 	gdb --args $(CPP) -fplugin=./plugin.so $(TEST_OBJS) -flto -flto-partition=none -O3 -fdump-ipa-all -fdump-tree-all -o result 
+
+test: $(TEST_OBJS) plugin.so
+	$(CPP) -fplugin=./plugin.so $(TEST_OBJS) -flto -flto-partition=none -O3 -fdump-ipa-all -fdump-tree-all -o result 
+
 
 clean:
 	\rm -f *.c.* *~ a.out result*
