@@ -193,8 +193,8 @@ class parser
 public:
 	struct cgraph_node * main_cnode;
 	struct cgraph_node * global_cnode;
-	VEC (csvarinfo_t, heap) * csvarmap;
-	VEC (constraint_t, heap) * aliases;
+	VEC_dec(csvarinfo_t, heap, csvarmap);
+	VEC_dec(constraint_t, heap, aliases);
 	map<unsigned int, expanded_location> heap_location;
 
 private:
@@ -206,7 +206,7 @@ private:
 	bool deref_stmt;
 	alloc_pool constraint_pool;
 	alloc_pool csvarinfo_pool;
-	VEC (constraint_t, heap) * constraints;
+	VEC_dec(constraint_t, heap, constraints);
 	struct pointer_map_t * vi_for_tree;
 
 private:	
@@ -217,17 +217,17 @@ private:
 	const char * alias_get_name (tree decl);
 	inline bool var_can_have_subvars (const_tree v);
 	bool type_must_have_pointers (tree t);
-	bool push_fields_onto_fieldstack (tree type, VEC(fieldoff_s,heap) **fieldstack,HOST_WIDE_INT offset);
+	bool push_fields_onto_fieldstack (tree type, VEC_arg(fieldoff_s,heap, *fieldstack),HOST_WIDE_INT offset);
 	tree get_decl (csvarinfo_t var);
 	tree get_decl_private (tree var_decl, HOST_WIDE_INT var_offset, HOST_WIDE_INT search_offset);
 	unsigned int count_num_arguments (tree decl, bool *is_varargs);
-	bool check_for_overlaps (VEC (fieldoff_s,heap) *fieldstack);
-	void sort_fieldstack (VEC(fieldoff_s,heap) *fieldstack);
+	bool check_for_overlaps (VEC_arg(fieldoff_s,heap, fieldstack));
+	void sort_fieldstack (VEC_arg(fieldoff_s,heap, fieldstack));
 	void cs_insert_vi_for_tree (tree t, csvarinfo_t vi);
 	
 	struct cgraph_node * scoping_fn (unsigned int varid);
 	bool var_defined_in_cfun (unsigned int varid, struct cgraph_node * cnode);
-	void cs_get_constraint_for_rhs (tree t, VEC (ce_s, heap) **results, basic_block bb, struct cgraph_node * cnode);
+	void cs_get_constraint_for_rhs (tree t, VEC_arg(ce_s, heap ,*results), basic_block bb, struct cgraph_node * cnode);
 	csvarinfo_t cs_new_var_info (tree t, const char *name, struct cgraph_node * cnode);
 	csvarinfo_t cs_create_variable_info_for_1 (tree decl, const char *name, struct cgraph_node * cnode);
 	unsigned int cs_create_variable_info_for (tree decl, const char *name, basic_block bb, struct cgraph_node * cnode);
@@ -241,14 +241,14 @@ private:
 	void cs_make_constraint_from (csvarinfo_t vi, int from, basic_block bb);
 	csvarinfo_t cs_make_constraint_from_heapvar (tree lhs, const char *name, basic_block bb, struct cgraph_node * cnode);
 	csvarinfo_t cs_first_or_preceding_vi_for_offset (csvarinfo_t start,unsigned HOST_WIDE_INT offset);
-	void cs_do_deref (VEC (ce_s, heap) **constraints, basic_block bb, struct cgraph_node * cnode);
-	void cs_get_constraint_for_ptr_offset (tree ptr, tree offset,VEC (ce_s, heap) **results, basic_block bb, struct cgraph_node * cnode);
-	void cs_get_constraint_for_component_ref (tree t, VEC(ce_s, heap) **results,bool address_p, bool lhs_p, basic_block bb, struct cgraph_node * cnode);
-	void cs_get_constraint_for_ssa_var (tree t, VEC(ce_s, heap) **results, bool address_p, basic_block bb, struct cgraph_node * cnode);
-	void cs_get_constraint_for_1 (tree t, VEC (ce_s, heap) **results, bool address_p, bool lhs_p, basic_block bb, struct cgraph_node * cnode);
-	void cs_process_all_all_constraints (VEC (ce_s, heap) *lhsc, VEC (ce_s, heap) *rhsc, basic_block bb);
-	void cs_get_constraint_for_address_of (tree t, VEC (ce_s, heap) **results, basic_block bb, struct cgraph_node * cnode);
-	void cs_get_constraint_for (tree t, VEC (ce_s, heap) **results, basic_block bb, struct cgraph_node * cnode);
+	void cs_do_deref (VEC_arg(ce_s, heap, *constraints), basic_block bb, struct cgraph_node * cnode);
+	void cs_get_constraint_for_ptr_offset (tree ptr, tree offset,VEC_arg(ce_s, heap ,*results), basic_block bb, struct cgraph_node * cnode);
+	void cs_get_constraint_for_component_ref (tree t, VEC_arg(ce_s, heap, *results),bool address_p, bool lhs_p, basic_block bb, struct cgraph_node * cnode);
+	void cs_get_constraint_for_ssa_var (tree t, VEC_arg(ce_s, heap, *results), bool address_p, basic_block bb, struct cgraph_node * cnode);
+	void cs_get_constraint_for_1 (tree t, VEC_arg(ce_s, heap ,*results), bool address_p, bool lhs_p, basic_block bb, struct cgraph_node * cnode);
+	void cs_process_all_all_constraints (VEC_arg(ce_s, heap, lhsc), VEC_arg(ce_s, heap, rhsc), basic_block bb);
+	void cs_get_constraint_for_address_of (tree t, VEC_arg(ce_s, heap ,*results), basic_block bb, struct cgraph_node * cnode);
+	void cs_get_constraint_for (tree t, VEC_arg(ce_s, heap ,*results), basic_block bb, struct cgraph_node * cnode);
 	csvarinfo_t cs_create_func_info_for (tree decl, const char *name, struct cgraph_node * cnode);
 	void cs_do_structure_copy (tree lhsop, tree rhsop, basic_block bb, struct cgraph_node * cnode);
 	void cs_init_base_vars (struct cgraph_node * cnode);
@@ -306,7 +306,7 @@ public:
 	csvarinfo_t cs_first_vi_for_offset (csvarinfo_t start, unsigned HOST_WIDE_INT offset);
 	void handle_unknown_offset (constraint_expr & e);
 	csvarinfo_t cs_get_varinfo (unsigned int n);
-	VEC (fieldoff_s, heap) * get_fieldstack (unsigned int pointer_record);
+	VEC_ret(fieldoff_s, heap) get_fieldstack (unsigned int pointer_record);
 	set<unsigned int> get_global_variables ();
 	set<unsigned int> get_global_named_pointers ();
 	set<unsigned int> get_local_variables (struct cgraph_node * function);

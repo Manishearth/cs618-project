@@ -40,7 +40,7 @@ map_arguments_at_call (gimple stmt, tree decl, bool generate_liveness, basic_blo
 {
    DEBUG ("\nmap_arguments_at_call");
 
-   VEC(ce_s, heap) *rhsc = NULL;
+   VEC_dec(ce_s, heap, rhsc);
    size_t j;
    int argoffset = 1;
    csvarinfo_t fi;
@@ -57,7 +57,7 @@ map_arguments_at_call (gimple stmt, tree decl, bool generate_liveness, basic_blo
            tree arg = gimple_call_arg (stmt, j);
            if (field_must_have_pointers (arg) && TREE_CODE (arg) != ADDR_EXPR) {
 	       DEBUG ("\nfield_must_have_pointers");
-               VEC (ce_s, heap) *results = NULL;
+               VEC_dec(ce_s, heap, results);
                cs_get_constraint_for (arg, &results, bb, cnode);
                FOR_EACH_VEC_ELT_NEW (ce_s, results, i, exp)
 	       {
@@ -113,7 +113,7 @@ map_function_pointer_arguments (CGRAPH_NODE * src_function, basic_block call_sit
    gimple_stmt_iterator gsi = gsi_start_bb (call_site);
    gimple stmt = gsi_stmt (gsi);
 
-   VEC(ce_s, heap) *rhsc = NULL;
+   VEC_dec(ce_s, heap, rhsc);
    size_t j;
    int argoffset = 1;
    csvarinfo_t fi;
@@ -212,7 +212,8 @@ map_return_value (basic_block call_block, CGRAPH_NODE * src_function, basic_bloc
 	       if (rhsop != NULL_TREE)
                {
                   /* Map it to the return value of return statement. */
-                  VEC(ce_s, heap) *lhsc = NULL, *rhsc = NULL;
+                  VEC_dec(ce_s, heap, lhsc);
+                  VEC_dec(ce_s, heap, rhsc);
                   cs_get_constraint_for (lhsop, &lhsc, call_block, src_function);
                   cs_get_constraint_for (rhsop, &rhsc, end_block, called_function);
                   cs_process_all_all_constraints (lhsc, rhsc, call_block);
@@ -438,7 +439,7 @@ field_must_have_pointers (tree t)
   return type_must_have_pointers (TREE_TYPE (t));
 }
 
-void check (VEC(fieldoff_s,heap) *fieldstack )
+void check (VEC_arg(fieldoff_s,heap, fieldstack))
 {
        if (VEC_length (fieldoff_s, fieldstack) <= 1
           || VEC_length (fieldoff_s, fieldstack) > MAX_FIELDS_FOR_FIELD_SENSITIVE) {
@@ -453,7 +454,7 @@ void check (VEC(fieldoff_s,heap) *fieldstack )
  * a vector of field offsets of the variable pointed by POINTER_RECORD.
  */
 
-VEC (fieldoff_s, heap) * parser:: 
+VEC_ret(fieldoff_s, heap) parser:: 
 get_fieldstack (unsigned int pointer_record) 
 { 
         csvarinfo_t var = VEC_index (csvarinfo_t, variable_data, pointer_record); 
@@ -471,7 +472,7 @@ get_fieldstack (unsigned int pointer_record)
 #endif
 	}
  
-        VEC (fieldoff_s, heap) * fieldstack = NULL; 
+        VEC_dec(fieldoff_s, heap,  fieldstack); 
         push_fields_onto_fieldstack (type, &fieldstack, 0); 
         DEBUG ("\nNumber of fields: %d", VEC_length (fieldoff_s, fieldstack)); 
   
@@ -498,7 +499,7 @@ get_fieldstack (unsigned int pointer_record)
    recursed for.  */
 
 bool parser::
-push_fields_onto_fieldstack (tree type, VEC(fieldoff_s,heap) **fieldstack, HOST_WIDE_INT offset)
+push_fields_onto_fieldstack (tree type, VEC_arg(fieldoff_s,heap, *fieldstack), HOST_WIDE_INT offset)
 {
   DEBUG ("\npush_fields_onto_fieldstack");
   DEBUG ("\nVEC_length (fieldoff_s, *fieldstack)=%d", VEC_length (fieldoff_s, *fieldstack)); 
@@ -594,7 +595,7 @@ push_fields_onto_fieldstack (tree type, VEC(fieldoff_s,heap) **fieldstack, HOST_
                 pair.must_have_pointers = false;
                 pair.may_have_pointers = false;
                 pair.only_restrict_pointers = false;
-                (*fieldstack)->safe_push(pair);
+                (fieldstack)->safe_push(pair);
 		DEBUG ("\nafter VEC_length (fieldoff_s, *fieldstack)=%d", VEC_length (fieldoff_s, *fieldstack)); 
 		DEBUG ("\npair->offset=%lld", pair->offset);
 		DEBUG ("\n7-- pushed fields:");
@@ -655,7 +656,7 @@ push_fields_onto_fieldstack (tree type, VEC(fieldoff_s,heap) **fieldstack, HOST_
                   = (!has_unknown_size
                      && POINTER_TYPE_P (TREE_TYPE (field))
                      && TYPE_RESTRICT (TREE_TYPE (field)));
-                (*fieldstack)->safe_push(pair);
+                (fieldstack)->safe_push(pair);
 		DEBUG ("\nafter VEC_length (fieldoff_s, *fieldstack)=%d", VEC_length (fieldoff_s, *fieldstack)); 
 		DEBUG ("\npair->offset=%lld", pair->offset);
 		DEBUG ("\n11-- pushed fields:");
@@ -821,7 +822,7 @@ count_num_arguments (tree decl, bool *is_varargs)
    FIELDSTACK is assumed to be sorted by offset.  */
 
 bool parser::
-check_for_overlaps (VEC (fieldoff_s,heap) *fieldstack)
+check_for_overlaps (VEC_arg(fieldoff_s,heap, fieldstack))
 {
   fieldoff_s *fo = NULL;
   unsigned int i;
@@ -863,7 +864,7 @@ fieldoff_compare (const void *pa, const void *pb)
 
 /* Sort a fieldstack according to the field offset and sizes.  */
 void parser::
-sort_fieldstack (VEC(fieldoff_s,heap) *fieldstack)
+sort_fieldstack (VEC_arg(fieldoff_s,heap, fieldstack))
 {
   VEC_qsort (fieldoff_s, fieldstack, fieldoff_compare);
 }
@@ -963,7 +964,7 @@ parameter_var (csvarinfo_t var)
 /* Given a gimple tree T, return the constraint expression vector for it
    to be used as the rhs of a constraint.  */
 void parser::
-cs_get_constraint_for_rhs (tree t, VEC (ce_s, heap) **results, basic_block bb, CGRAPH_NODE * cnode)
+cs_get_constraint_for_rhs (tree t, VEC_arg(ce_s, heap, *results), basic_block bb, CGRAPH_NODE * cnode)
 {
    gcc_assert (VEC_length (ce_s, *results) == 0);
    cs_get_constraint_for_1 (t, results, false, false, bb, cnode);
@@ -1017,7 +1018,7 @@ cs_create_variable_info_for_1 (tree decl, const char *name, CGRAPH_NODE * cnode)
    csvarinfo_t vi, newvi;
    tree decl_type = TREE_TYPE (decl);	// decl=VAR_DECL, decl_type=RECORD_TYPE
    tree declsize = DECL_P (decl) ? DECL_SIZE (decl) : TYPE_SIZE (decl_type);
-   VEC (fieldoff_s,heap) *fieldstack = NULL;
+   VEC_dec(fieldoff_s,heap, fieldstack);
    fieldoff_s *fo;
    unsigned int i;
 
@@ -1194,7 +1195,7 @@ cs_create_variable_info_for (tree decl, const char *name, basic_block bb, CGRAPH
 	   DEBUG ("\nDECL_INITIAL(decl): ");
 	   //print_node (dump_file, "", DECL_INITIAL (decl), 0);
 #endif
-	   VEC (ce_s, heap) *rhsc = NULL;
+	   VEC_dec(ce_s, heap, rhsc);
 	   struct constraint_expr lhs, *rhsp;
 	   unsigned i;
 	   cs_get_constraint_for_rhs (DECL_INITIAL (decl), &rhsc, bb, cnode);
@@ -1957,7 +1958,7 @@ cs_first_or_preceding_vi_for_offset (csvarinfo_t start,
    DEREF (DEREF) = (temp = DEREF1; result = DEREF(temp))
    This is needed so that we can handle dereferencing DEREF constraints.  */
 void parser::
-cs_do_deref (VEC (ce_s, heap) **constraints, basic_block bb, CGRAPH_NODE * cnode)
+cs_do_deref (VEC_arg(ce_s, heap, *constraints), basic_block bb, CGRAPH_NODE * cnode)
 {
    DEBUG ("\ncs_do_deref()");
    struct constraint_expr *c;
@@ -1991,7 +1992,7 @@ cs_do_deref (VEC (ce_s, heap) **constraints, basic_block bb, CGRAPH_NODE * cnode
    resulting constraint expressions in *RESULTS.  */
 void parser::
 cs_get_constraint_for_ptr_offset (tree ptr, tree offset,
-       VEC (ce_s, heap) **results, basic_block bb, CGRAPH_NODE * cnode)
+       VEC_arg(ce_s, heap, *results), basic_block bb, CGRAPH_NODE * cnode)
 {
    DEBUG ("\ncs_get_constraint_for_ptr_offset()");
    struct constraint_expr c;
@@ -2098,7 +2099,7 @@ cs_get_constraint_for_ptr_offset (tree ptr, tree offset,
    If lhs_p is true then the constraint expression is assumed to be used
    as the lhs.  */
 void parser::
-cs_get_constraint_for_component_ref (tree t, VEC(ce_s, heap) **results,
+cs_get_constraint_for_component_ref (tree t, VEC_arg(ce_s, heap, *results),
 				  bool address_p, bool lhs_p, basic_block bb, CGRAPH_NODE * cnode)
 {
    DEBUG ("\ncs_get_constraint_for_component_ref");
@@ -2299,7 +2300,7 @@ cs_get_constraint_for_component_ref (tree t, VEC(ce_s, heap) **results,
 /* Get a constraint expression vector from an SSA_VAR_P node.
    If address_p is true, the result will be taken its address of.  */
 void parser::
-cs_get_constraint_for_ssa_var (tree t, VEC(ce_s, heap) **results, bool address_p, basic_block bb, CGRAPH_NODE * cnode)
+cs_get_constraint_for_ssa_var (tree t, VEC_arg(ce_s, heap, *results), bool address_p, basic_block bb, CGRAPH_NODE * cnode)
 {
    DEBUG ("\ncs_get_constraint_for_ssa_var");
    struct constraint_expr cexpr;
@@ -2357,7 +2358,7 @@ cs_get_constraint_for_ssa_var (tree t, VEC(ce_s, heap) **results, bool address_p
 
 /* Given a tree T, return the constraint expression for it.  */
 void parser::
-cs_get_constraint_for_1 (tree t, VEC (ce_s, heap) **results, bool address_p,
+cs_get_constraint_for_1 (tree t, VEC_arg(ce_s, heap, *results), bool address_p,
 		      bool lhs_p, basic_block bb, CGRAPH_NODE * cnode)
 {
    DEBUG ("\ncs_get_constraint_for_1");
@@ -2497,7 +2498,7 @@ cs_get_constraint_for_1 (tree t, VEC (ce_s, heap) **results, bool address_p,
 	 	   DEBUG ("\nCONSTRUCTOR");
 	           unsigned int i;
 	      	   tree val;
-	      	   VEC (ce_s, heap) *tmp = NULL;
+	      	   VEC_dec(ce_s, heap, tmp);
 	      	   FOR_EACH_CONSTRUCTOR_VALUE (CONSTRUCTOR_ELTS (t), i, val) {
 		       struct constraint_expr *rhsp;
 		       unsigned j;
@@ -2534,7 +2535,7 @@ cs_get_constraint_for_1 (tree t, VEC (ce_s, heap) **results, bool address_p,
 /* Efficiently generates constraints from all entries in *RHSC to all
    entries in *LHSC.  */
 void parser::
-cs_process_all_all_constraints (VEC (ce_s, heap) *lhsc, VEC (ce_s, heap) *rhsc, basic_block bb)
+cs_process_all_all_constraints (VEC_arg(ce_s, heap, lhsc), VEC_arg(ce_s, heap, rhsc), basic_block bb)
 {
    struct constraint_expr *lhsp, *rhsp;
    unsigned i, j;
@@ -2566,7 +2567,7 @@ cs_process_all_all_constraints (VEC (ce_s, heap) *lhsc, VEC (ce_s, heap) *rhsc, 
 /* Given a tree T, return the constraint expression for taking the
    address of it. */
 void parser::
-cs_get_constraint_for_address_of (tree t, VEC (ce_s, heap) **results, basic_block bb, CGRAPH_NODE * cnode)
+cs_get_constraint_for_address_of (tree t, VEC_arg(ce_s, heap, *results), basic_block bb, CGRAPH_NODE * cnode)
 {
    struct constraint_expr *c;
    unsigned int i;
@@ -2583,7 +2584,7 @@ cs_get_constraint_for_address_of (tree t, VEC (ce_s, heap) **results, basic_bloc
 
 /* Given a gimple tree T, return the constraint expression vector for it.  */
 void parser::
-cs_get_constraint_for (tree t, VEC (ce_s, heap) **results, basic_block bb, CGRAPH_NODE * cnode)
+cs_get_constraint_for (tree t, VEC_arg(ce_s, heap, *results), basic_block bb, CGRAPH_NODE * cnode)
 {
   gcc_assert (VEC_length (ce_s, *results) == 0);
   DEBUG ("\ncs_get_constraint_for\n");
@@ -2718,7 +2719,8 @@ void parser::
 cs_do_structure_copy (tree lhsop, tree rhsop, basic_block bb, CGRAPH_NODE * cnode)  /* Look into : Structure variables */
 {
    struct constraint_expr *lhsp, *rhsp;
-   VEC (ce_s, heap) *lhsc = NULL, *rhsc = NULL;
+   VEC_dec(ce_s, heap, lhsc);
+   VEC_dec(ce_s, heap, rhsc);
    unsigned j;
 
    DEBUG ("\ncs_do_structure_copy ()");
@@ -2974,8 +2976,8 @@ cs_init_alias_vars (CGRAPH_NODE * cnode)
   // struct constraint_expr csexpr;
   // This gives segmentation fault if constraint_expr contains list<>.
   // VEC_safe_push (ms_s, heap, results, &csexpr);
-   csvarmap = new vec<csvarinfo_t, heap>;
-   aliases = new vec<constraint_t, heap>;
+   //csvarmap = new vec<csvarinfo_t, heap>;
+   //aliases = new vec<constraint_t, heap>;
    VEC_alloc_NEW(csvarmap, csvarinfo_t, heap, 200);
    VEC_alloc_NEW(aliases, constraint_t, heap, 200);
    DEBUG ("\ncreate_alloc_pool (constraint)");
@@ -3203,8 +3205,8 @@ process_gimple_assign_stmt (gimple stmt, basic_block bb, CGRAPH_NODE * cnode)
    if (field_must_have_pointers (lhsop)) 
    {
        DEBUG ("\nmust have pointers lhs");
-       VEC(ce_s, heap) *lhsc = NULL;
-       VEC(ce_s, heap) *rhsc = NULL;
+       VEC_dec(ce_s, heap, lhsc);
+       VEC_dec(ce_s, heap, rhsc);
        if (rhsop && AGGREGATE_TYPE_P (TREE_TYPE (lhsop)))  /* Look into : Structure variables */
        {
         	DEBUG ("\naggregate_type_p");
@@ -3354,7 +3356,7 @@ process_gimple_condition(gimple stmt, basic_block bb, CGRAPH_NODE * cnode)
    tree op1 = gimple_cond_rhs (stmt);
 
    if (field_must_have_pointers (op0) && TREE_CODE (op0) != ADDR_EXPR) {
-       VEC (ce_s, heap) *results = NULL;
+       VEC_dec(ce_s, heap, results);
        cs_get_constraint_for (op0, &results, bb, cnode);
        FOR_EACH_VEC_ELT_NEW (ce_s, results, i, exp)
 	// DEBUG ("\ngenerate liveness for %d",exp->var);
@@ -3362,7 +3364,7 @@ process_gimple_condition(gimple stmt, basic_block bb, CGRAPH_NODE * cnode)
        VEC_free (ce_s, heap, results);
    }
    if (field_must_have_pointers (op1) && TREE_CODE (op1) != ADDR_EXPR) {
-       VEC (ce_s, heap) *results = NULL;
+       VEC_dec(ce_s, heap, results);
        cs_get_constraint_for (op1, &results, bb, cnode);
        FOR_EACH_VEC_ELT_NEW (ce_s, results, i, exp)
 	// DEBUG ("\n%d generate liveness for",exp->var);
@@ -3377,8 +3379,8 @@ process_gimple_condition(gimple stmt, basic_block bb, CGRAPH_NODE * cnode)
 void parser::
 process_gimple_phi_stmt (gimple stmt, basic_block bb, CGRAPH_NODE * cnode)
 {
-   VEC(ce_s, heap) *lhsc = NULL;
-   VEC(ce_s, heap) *rhsc = NULL;
+   VEC_dec(ce_s, heap, lhsc);
+   VEC_dec(ce_s, heap, rhsc);
    struct constraint_expr *c;
    size_t i;
    unsigned int j;
@@ -3523,7 +3525,7 @@ generate_retval_liveness (gimple stmt, basic_block bb, CGRAPH_NODE * cnode)
 
    if (retval!=NULL_TREE && field_must_have_pointers (retval)) {
        DEBUG ("\nNot pointer type");
-       VEC(ce_s, heap) *rhsc = NULL;
+       VEC_dec(ce_s, heap, rhsc);
        struct constraint_expr *rhs;
        unsigned int i;
 
@@ -4350,7 +4352,7 @@ get_function_arguments (basic_block call_site, CGRAPH_NODE * src_function)
    for (int j = 0; j < gimple_call_num_args (call_stmt); j++) {
        tree arg = gimple_call_arg (call_stmt, j);
        if (field_must_have_pointers (arg)) {
-               VEC (ce_s, heap) *results = NULL;
+               VEC_dec(ce_s, heap,results);
                cs_get_constraint_for (arg, &results, call_site, src_function);
        	       struct constraint_expr *exp;
                unsigned i;
