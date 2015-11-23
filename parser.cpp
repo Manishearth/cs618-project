@@ -887,10 +887,13 @@ void parser::
 cs_insert_vi_for_tree (tree t, csvarinfo_t vi)
 {
    DEBUG ("\ncs_insert_vi_for_tree\n");
-   void **slot = POINTER_MAP_INSERT (vi_for_tree, t, vi);
-   gcc_assert (vi);
-   gcc_assert (*slot == NULL);
+   // void **slot = POINTER_MAP_INSERT (vi_for_tree, t, vi);
+   // gcc_assert (vi);
+   // gcc_assert (*slot == NULL);
    // *slot = vi;
+
+   // GCC 5
+   vi_for_tree->put(t, vi);
 }
 
 bool parser::
