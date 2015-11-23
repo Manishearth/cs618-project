@@ -2586,7 +2586,7 @@ cs_get_constraint_for_address_of (tree t, VEC_arg(ce_s, heap, *results), basic_b
 void parser::
 cs_get_constraint_for (tree t, VEC_arg(ce_s, heap, *results), basic_block bb, CGRAPH_NODE * cnode)
 {
-  gcc_assert (VEC_length (ce_s, *results) == 0);
+  //gcc_assert (VEC_length (ce_s, *results) == 0);
   DEBUG ("\ncs_get_constraint_for\n");
   cs_get_constraint_for_1 (t, results, false, true, bb, cnode);
 }
