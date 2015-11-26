@@ -41,14 +41,16 @@
 
 #include "stor-layout.h"
 
+#include <vector>
+#include <algorithm>
 #define WITH_GCC_5
 
 //#define VEC(t, gc) vec<t,gc>
 #define VEC_free(t,gc,o) 1+1// (&o)->~vec()
 
-#define VEC_dec(t, gc, ident) vec<t,gc> ident // VEC(t, gc) *ident = NULL for 4
-#define VEC_ret(t, gc) vec<t,gc>  // VEC(t, gc) *ident = NULL for 4
-#define VEC_arg(t, gc, ident) vec<t,gc> ident // VEC(t, gc) *ident  for 4
+#define VEC_dec(t, gc, ident) std::vector<t> ident // VEC(t, gc) *ident = NULL for 4
+#define VEC_ret(t, gc) std::vector<t> // VEC(t, gc) *ident = NULL for 4
+#define VEC_arg(t, gc, ident) std::vector<t> ident // VEC(t, gc) *ident  for 4
 
 #define heap va_heap
 #define DEF_VEC_O(x, ...) static bool o_##x = false
@@ -57,35 +59,37 @@
 #define DEF_VEC_ALLOC_P(x, ...) static bool ap_##x = false
 
 //#define VEC_length(cs, vec) (vec)->length()
-#define VEC_length(cs, vec) (vec).length()
-#define VEC_empty(cs, vec) (vec).is_empty()
-#define VEC_truncate(cs, vec, n) (vec).truncate(n)
-#define VEC_qsort(cs, vec, fun) (vec).qsort(fun)
-#define VEC_last(cs,vec) &((vec).last())
+#define VEC_length(cs, vec) (vec).size()
+#define VEC_empty(cs, vec) (vec).empty()
+#define VEC_truncate(cs, vec, n) (vec).resize(n)
+#define VEC_qsort(cs, vec, fun) std::sort((vec).begin(), (vec).end(), fun)
+#define VEC_last(cs,vec) &((vec).back())
 #define VEC_index(cs, vec, idx) (((vec))[idx])
 #define VEC_index_2(cs, vec, idx) (&((vec))[idx])
-#define VEC_pop(cs,vec) &((vec).pop())
+#define VEC_pop(cs,vec) ((vec).pop_back())
 
 #define VEC_replace(cs,vec, idx, new_) (vec)[idx] = *(new_)
 
 // #define VEC_safe_push(cs,gc, v, d) vec_safe_push((v), (d))
-#define VEC_safe_push(cs,gc, v, d) (v).safe_push((d))
-#define VEC_safe_push_2(cs,gc, v, d) (v).safe_push((*d))
-#define VEC_safe_push_3(cs,gc, v, d) (v).safe_push((*(cs*)d)) // careful, nullptrderef is happening here
+#define VEC_safe_push(cs,gc, v, d) (v).push_back((d))
+#define VEC_safe_push_2(cs,gc, v, d) (v).push_back((*d))
+#define VEC_safe_push_3(cs,gc, v, d) (v).push_back((*(cs*)d)) // careful, nullptrderef is happening here
 
-
-#define FOR_EACH_VEC_ELT_NEW(a,b,c,d) FOR_EACH_VEC_ELT(b,c,d) 
+#define safe_push push_back
+//#define FOR_EACH_VEC_ELT_NEW(a,b,c,d) FOR_EACH_VEC_ELT(b,c,d) 
 //#define _FOR_EACH_VEC_ELT(a,b,c) FOR_EACH_VEC_ELT(a,b,c)
 //#undef FOR_EACH_VEC_ELT
 //#define FOR_EACH_VEC_ELT(a,b,c,d) _FOR_EACH_VEC_ELT(a,b,c)
 #define FOR_EACH_LOOP_NEW(a,b,c) FOR_EACH_LOOP(b,c)
+
+#define FOR_EACH_VEC_ELT_NEW(a,b,c,d) c=0 ;for (std::vector<a>::iterator d = (b).begin(); d != (b).end(); ++d, c++)
 
 #define CGRAPH_NODE cgraph_node //  = struct cgraph_node for 4
 #define cgraph_nodes cgraph_new_nodes[0] // is this correct?
 #define CGRAPH_CAST (cgraph_node*)
 #define VARPOOL_CAST (varpool_node*)
 
-#define VEC_alloc_NEW(vec, cs, h, len) (vec).create(len) // vec = VEC_alloc(args...) in 4
+#define VEC_alloc_NEW(vec, cs, h, len) (vec).reserve(len) // vec = VEC_alloc(args...) in 4
 
 #define FOR_EACH_BB(bb) FOR_EACH_BB_FN(bb, cfun)
  
@@ -96,7 +100,7 @@
 #define IS_GIMPLE_RETURN(ret, stmt) greturn* (ret) = dyn_cast <greturn *> (stmt)
 // (gimple_code (stmt) == GIMPLE_RETURN) on 4
 
-#define VEC_iterate(ty, to_visit, idx, num) (to_visit).iterate ((idx), &(num))
+#define VEC_iterate(ty, to_visit, idx, num) (num = &to_visit[idx], idx<(to_visit).size())
 
 
 #define pointer_map_create() new hash_map<tree, csvarinfo_t>
@@ -118,7 +122,6 @@
 #include <set>
 #include <stack>
 #include <list>
-#include <vector>
 #include <tr1/unordered_map>
 //#include <boost/bimap.hpp>
 using namespace std;
