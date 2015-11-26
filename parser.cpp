@@ -842,10 +842,10 @@ check_for_overlaps (VEC_arg(fieldoff_s,heap, fieldstack))
 // This function cannot be made a member function of this class
 
 int
-fieldoff_compare (const void *pa, const void *pb)
+fieldoff_compare (const fieldoff_s pa, const fieldoff_s pb)
 {
-  const fieldoff_s *foa = (const fieldoff_s *)pa;
-  const fieldoff_s *fob = (const fieldoff_s *)pb;
+  const fieldoff_s *foa = (const fieldoff_s *)&pa;
+  const fieldoff_s *fob = (const fieldoff_s *)&pb;
   unsigned HOST_WIDE_INT foasize, fobsize;
 
   if (foa->offset < fob->offset)
